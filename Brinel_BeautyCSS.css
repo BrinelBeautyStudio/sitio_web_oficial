@@ -1,0 +1,1122 @@
+/* ══════════════════════════════════════════
+       VARIABLES CSS GLOBALES
+       Definen la paleta de colores del sitio
+══════════════════════════════════════════ */
+:root {
+    --fucsia: #d63384;
+    /* Rosa fucsia principal, extraído del logo */
+    --fucsia-oscuro: #a8255e;
+    /* Fucsia más oscuro para hovers y acentos */
+    --fucsia-claro: #f8d7e8;
+    /* Fucsia muy claro para fondos suaves */
+    --fucsia-suave: #fdf0f6;
+    /* Casi blanco rosado para secciones alternas */
+    --blanco: #ffffff;
+    /* Blanco puro */
+    --texto-oscuro: #2d1020;
+    /* Casi negro con tono rosado para textos */
+    --texto-medio: #7a3558;
+    /* Gris rosado para subtextos */
+    --dorado: #d4a0b5;
+    /* Rosa dorado para detalles decorativos */
+}
+
+/* ══════════════════════════════════════════
+       ESTILOS GENERALES DEL BODY
+══════════════════════════════════════════ */
+body {
+    font-family: 'Jost', sans-serif;
+    /* Fuente principal del sitio */
+    color: var(--texto-oscuro);
+    /* Color de texto predeterminado */
+    overflow-x: hidden;
+    /* Evita scroll horizontal no deseado */
+    background: var(--blanco);
+    /* Fondo blanco base */
+}
+
+/* Todos los títulos usan la fuente serif elegante */
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+/* Suaviza el scroll al navegar entre secciones */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ══════════════════════════════════════════
+       NAVBAR – BARRA DE NAVEGACIÓN
+══════════════════════════════════════════ */
+.navbar {
+    background: rgba(255, 255, 255, 0.97) !important;
+    /* Fondo blanco semitransparente */
+    backdrop-filter: blur(10px);
+    /* Efecto vidrio esmerilado */
+    border-bottom: 2px solid var(--fucsia-claro);
+    /* Línea inferior rosada */
+    transition: box-shadow 0.3s ease;
+    /* Transición suave de sombra */
+    padding: 0.5rem 0;
+    /* Padding vertical reducido */
+    min-height: 80px;
+    /* Asegura que la barra sea lo suficientemente alta para el logo */
+}
+
+
+/* Sombra que aparece al hacer scroll */
+.navbar.scrolled {
+    box-shadow: 0 4px 25px rgba(214, 51, 132, 0.15);
+}
+
+/* Logo de texto que imita la caligrafía del logo original */
+.navbar-brand-text {
+    font-family: 'Great Vibes', cursive;
+    /* Fuente cursiva elegante */
+    font-size: 2rem;
+    /* Tamaño grande para el nombre */
+    color: var(--fucsia) !important;
+    /* Color fucsia del logo */
+    line-height: 1;
+    /* Interlineado ajustado */
+    text-decoration: none;
+    /* Sin subrayado */
+}
+
+/* Subtítulo pequeño debajo del nombre en el navbar */
+.navbar-brand-sub {
+    font-family: 'Jost', sans-serif;
+    /* Fuente sans-serif para el subtítulo */
+    font-size: 0.6rem;
+    /* Tamaño muy pequeño */
+    letter-spacing: 3px;
+    /* Espaciado amplio entre letras */
+    text-transform: uppercase;
+    /* Mayúsculas */
+    color: var(--texto-medio);
+    /* Color rosado medio */
+    display: block;
+    /* Ocupa su propia línea */
+    margin-top: -4px;
+    /* Sube un poco para pegarse al nombre */
+}
+
+/* Contenedor del logo en el navbar */
+.navbar-brand-wrap {
+    display: flex;
+    align-items: center;
+    height: auto;
+    /* Permite que el contenedor crezca con la imagen */
+    padding: 5px 0;
+}
+
+/* Imagen circular del logo en el navbar */
+.navbar-logo-img {
+    /* Ajusta este valor (ej: 70px, 80px, 90px) para agrandarlo */
+    height: 85px !important;
+    width: 85px !important;
+    /* IMPORTANTE: En tu CSS original ambos eran 52px */
+
+    border-radius: 50%;
+    /* Mantiene la forma circular */
+    object-fit: cover;
+    /* Evita que la imagen se estire feo */
+    border: 2px solid var(--fucsia-claro);
+    transition: transform 0.3s ease;
+    /* Efecto suave al pasar el mouse */
+}
+
+/* Opcional: Que el logo resalte un poquito más al pasar el mouse */
+.navbar-logo-img:hover {
+    transform: scale(1.05);
+}
+
+/* Borde rosado claro */
+
+
+/* Estilos de los enlaces del menú de navegación */
+.nav-link {
+    font-size: 0.78rem !important;
+    /* Tamaño pequeño */
+    letter-spacing: 2px;
+    /* Espaciado entre letras */
+    text-transform: uppercase;
+    /* Mayúsculas */
+    color: var(--texto-medio) !important;
+    /* Color rosado */
+    font-weight: 500;
+    /* Semi negrita */
+    padding: 0.5rem 0.8rem !important;
+    /* Padding interno */
+    position: relative;
+    /* Para el pseudo-elemento de subrayado */
+    transition: color 0.3s;
+    /* Transición suave del color */
+}
+
+/* Línea animada que aparece debajo del link al hacer hover */
+.nav-link::after {
+    content: '';
+    /* Pseudo-elemento vacío */
+    position: absolute;
+    /* Posición absoluta respecto al link */
+    bottom: 0;
+    left: 50%;
+    /* Parte de abajo, centrado */
+    width: 0;
+    height: 2px;
+    /* Inicia sin ancho */
+    background: var(--fucsia);
+    /* Color fucsia */
+    transform: translateX(-50%);
+    /* Centra horizontalmente */
+    transition: width 0.3s ease;
+    /* Anima el ancho */
+}
+
+/* Al hacer hover: cambia color y muestra la línea */
+.nav-link:hover {
+    color: var(--fucsia) !important;
+}
+
+.nav-link:hover::after {
+    width: 80%;
+}
+
+/* La línea crece al 80% del ancho */
+
+/* Ícono hamburguesa en móvil con color fucsia */
+.navbar-toggler {
+    border-color: var(--fucsia);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23d63384' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* ══════════════════════════════════════════
+       BOTONES PERSONALIZADOS
+══════════════════════════════════════════ */
+
+/* Botón primario sólido fucsia */
+.btn-brinel {
+    background: var(--fucsia);
+    /* Fondo fucsia */
+    color: #fff;
+    /* Texto blanco */
+    border: 2px solid var(--fucsia);
+    /* Borde fucsia */
+    border-radius: 30px;
+    /* Bordes redondeados (pastilla) */
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    /* Transición suave de todos los estilos */
+}
+
+.btn-brinel:hover {
+    background: var(--fucsia-oscuro);
+    /* Fondo más oscuro al hover */
+    border-color: var(--fucsia-oscuro);
+    color: #fff;
+    transform: translateY(-2px);
+    /* Sube ligeramente al hover */
+    box-shadow: 0 8px 25px rgba(214, 51, 132, 0.35);
+    /* Sombra fucsia */
+}
+
+/* Botón secundario con contorno */
+.btn-brinel-outline {
+    background: transparent;
+    color: var(--fucsia);
+    border: 2px solid var(--fucsia);
+    border-radius: 30px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-brinel-outline:hover {
+    background: var(--fucsia);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(214, 51, 132, 0.3);
+}
+
+/* ══════════════════════════════════════════
+       ENCABEZADOS DE SECCIÓN (reutilizable)
+══════════════════════════════════════════ */
+
+/* Etiqueta pequeña encima del título de sección */
+.sec-tag {
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--fucsia);
+    font-weight: 600;
+    font-family: 'Jost', sans-serif;
+}
+
+/* Título principal de sección */
+.sec-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    /* Tamaño fluido entre 2rem y 3rem */
+    color: var(--texto-oscuro);
+    line-height: 1.2;
+}
+
+/* Texto en cursiva con color fucsia dentro de títulos */
+.sec-title em {
+    font-style: italic;
+    color: var(--fucsia);
+}
+
+/* Línea decorativa degradada debajo del título */
+.divisor {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(to right, var(--fucsia), var(--dorado));
+    border-radius: 2px;
+    margin: 0.8rem auto 0;
+    /* Centrada con margen superior */
+}
+
+/* ══════════════════════════════════════════
+       SECCIÓN HERO – CARRUSEL PRINCIPAL
+══════════════════════════════════════════ */
+
+/* Contenedor del carrusel ocupa toda la altura de la pantalla */
+#inicio {
+    margin-top: 74px;
+    /* Offset para que no quede detrás del navbar fijo */
+}
+
+/* Cada slide del carrusel tiene altura de pantalla completa */
+.carousel-item-custom {
+    height: 92vh;
+    /* 92% de la altura de la ventana */
+    min-height: 500px;
+    /* Mínimo 500px para pantallas pequeñas */
+    display: flex;
+    /* Flexbox para centrar contenido */
+    align-items: center;
+    /* Centrado vertical */
+    justify-content: center;
+    /* Centrado horizontal */
+    position: relative;
+    /* Para el overlay encima */
+    overflow: hidden;
+    /* Oculta lo que se salga */
+}
+
+/* Slide 1: Degradado fucsia vibrante del logo */
+.slide-1 {
+    background: radial-gradient(ellipse at center, #e040a0 0%, #c2185b 50%, #880e4f 100%);
+}
+
+/* Slide 2: Degradado rosa oscuro elegante */
+.slide-2 {
+    background: linear-gradient(135deg, #f8bbd0 0%, #e91e8c 40%, #880e4f 100%);
+}
+
+/* Slide 3: Fucsia suave y dorado */
+.slide-3 {
+    background: linear-gradient(160deg, #fce4ec 0%, #f06292 50%, #ad1457 100%);
+}
+
+/* Capa oscura encima del fondo para mejorar legibilidad del texto */
+.slide-overlay {
+    position: absolute;
+    /* Se posiciona sobre el fondo */
+    inset: 0;
+    /* Cubre toda la superficie del slide */
+    background: rgba(0, 0, 0, 0.25);
+    /* Negro semitransparente al 25% */
+}
+
+/* Contenido del slide (texto y botones) por encima del overlay */
+.slide-content {
+    position: relative;
+    /* Sobre el overlay */
+    z-index: 2;
+    /* Índice de apilamiento alto */
+    text-align: center;
+    /* Texto centrado */
+    color: #fff;
+    /* Texto blanco */
+    padding: 0 1.5rem;
+    /* Padding lateral en móvil */
+}
+
+/* Nombre del estudio en el slide usando la fuente cursiva */
+.slide-brand {
+    font-family: 'Great Vibes', cursive;
+    /* Misma fuente que el logo */
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    /* Tamaño fluido muy grande */
+    color: #fff;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    /* Sombra para contraste */
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+
+/* Subtítulo pequeño del slide */
+.slide-sub {
+    font-size: 0.75rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: 'Jost', sans-serif;
+    margin-bottom: 1.2rem;
+}
+
+/* Título grande del slide */
+.slide-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    color: #fff;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+/* Descripción corta del slide */
+.slide-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 550px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+}
+
+/* Decoración floral SVG en el slide */
+.slide-deco {
+    font-size: 4rem;
+    /* Tamaño del emoji decorativo */
+    opacity: 0.25;
+    /* Muy transparente, decorativo */
+    position: absolute;
+    /* Posicionamiento libre */
+    pointer-events: none;
+    /* No interfiere con clics */
+}
+
+.slide-deco.top-left {
+    top: 8%;
+    left: 5%;
+}
+
+/* Esquina superior izquierda */
+.slide-deco.top-right {
+    top: 8%;
+    right: 5%;
+}
+
+/* Esquina superior derecha */
+.slide-deco.bot-left {
+    bottom: 8%;
+    left: 5%;
+}
+
+/* Esquina inferior izquierda */
+.slide-deco.bot-right {
+    bottom: 8%;
+    right: 5%;
+}
+
+/* Esquina inferior derecha */
+
+/* Indicadores del carrusel (puntitos abajo) con color fucsia */
+.carousel-indicators [data-bs-target] {
+    width: 10px;
+    /* Ancho del punto */
+    height: 10px;
+    /* Alto del punto */
+    border-radius: 50%;
+    /* Forma circular */
+    background-color: rgba(255, 255, 255, 0.5);
+    /* Blanco semitransparente */
+    border: none;
+    transition: background 0.3s, transform 0.3s;
+}
+
+/* Punto activo del carrusel */
+.carousel-indicators .active {
+    background-color: #fff;
+    /* Blanco sólido para el activo */
+    transform: scale(1.3);
+    /* Ligeramente más grande */
+}
+
+/* Flechas del carrusel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    /* Sombra para visibilidad */
+}
+
+/* ══════════════════════════════════════════
+       SECCIÓN HEADER CON CARDS DE INFORMACIÓN
+══════════════════════════════════════════ */
+/* ==========================================================================
+   SECCIÓN DE INFORMACIÓN - CARDS UNIFICADAS
+   ========================================================================== */
+/* --- DISEÑO DE CARDS CON IMÁGENES GIGANTES --- */
+
+.info-card-giant {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    border-top: 6px solid #d63384;
+    /* Línea fucsia superior */
+}
+
+.info-card-giant:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(214, 51, 132, 0.2);
+}
+
+/* La sección de la imagen: 450px de altura (3 veces más que antes) */
+.card-img-giant {
+    width: 100%;
+    height: 450px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 25px;
+}
+
+/* Oscurece un poco el fondo de la imagen para que el título blanco resalte */
+.card-img-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.7) 100%);
+    z-index: 1;
+}
+
+/* Título elegante sobre la foto */
+.card-title-over {
+    color: #fff;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilo del área de texto rosada */
+.card-editable-giant {
+    width: 100%;
+    border: none;
+    background-color: #fff0f5;
+    /* Rosado Brinel suave */
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 0.95rem;
+    color: #444;
+    resize: none;
+    outline: none;
+    font-family: 'Jost', sans-serif;
+}
+
+.card-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #d63384;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Color y sombra para los iconos de Bootstrap en los títulos */
+.card-title-over i {
+    color: #ff007f;
+    /* Un fucsia más vibrante y profesional */
+    font-size: 1.4rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    vertical-align: middle;
+}
+
+/* Efecto hover para que el icono brille cuando pases el mouse */
+.info-card-giant:hover .card-title-over i {
+    color: #ffffff;
+    transition: 0.3s ease;
+}
+
+/* ══════════════════════════════════════════
+       SECCIÓN DE TRABAJOS / SERVICIOS
+══════════════════════════════════════════ */
+/* ==========================================================================
+   SECCIÓN SERVICIOS - DISEÑO MITAD Y MITAD (CORREGIDO)
+   ========================================================================== */
+
+/* ==========================================================================
+   DISEÑO DE SERVICIOS - MITAD Y MITAD GIGANTE (COMENTADO)
+   ========================================================================== */
+
+.trabajo-card-split {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(214, 51, 132, 0.1);
+
+    /* --- TAMAÑO DE LA TARJETA --- */
+    min-height: 450px;
+    /* <--- AJUSTA AQUÍ: Este valor hace que sea "Gigante" */
+    display: flex;
+    height: 100%;
+    /* Asegura que llene el espacio de la columna */
+}
+
+/* Efecto al pasar el mouse */
+.trabajo-card-split:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 45px rgba(214, 51, 132, 0.2);
+}
+
+/* Contenedor de la Imagen (Lado Izquierdo) */
+.card-img-container-split {
+    position: relative;
+    overflow: hidden;
+
+    /* --- TAMAÑO DE LA IMAGEN --- */
+    /* Debe coincidir con el min-height de la card para que se vea simétrico */
+    min-height: 450px;
+    /* <--- AJUSTA AQUÍ: Igual que arriba */
+    flex: 0 0 50%;
+    /* Fuerza a que la imagen ocupe exactamente el 50% del ancho */
+}
+
+.img-split-view {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Llena el espacio sin deformar la foto */
+    object-position: center;
+    display: block;
+}
+
+/* El Emoji o Icono flotante */
+.trabajo-visual-mini {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    color: #d63384;
+    /* Color fucsia para el icono */
+}
+
+/* Cuerpo de la Card (Lado Derecho) */
+.card-body-split {
+    padding: 2.5rem;
+    /* Más espacio interno para un look Premium */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 50%;
+    /* Fuerza a que el texto ocupe el otro 50% */
+    background: #fff;
+}
+
+.card-body-split h5 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    /* Título un poco más grande */
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.card-body-split p {
+    font-size: 1rem;
+    /* Texto más legible */
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+/* Badge de Precio y Botón */
+.trabajo-precio {
+    display: inline-block;
+    background: linear-gradient(135deg, #d63384, #b02a6b);
+    color: #fff;
+    padding: 0.6rem 1.4rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.btn-agendar-sm {
+    color: #d63384;
+    text-decoration: none;
+    font-weight: 600;
+    border: 2px solid #d63384;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-agendar-sm:hover {
+    background: #d63384;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* --- AJUSTE PARA CELULARES --- */
+@media (max-width: 768px) {
+    .trabajo-card-split {
+        flex-direction: column;
+        /* En móvil, la imagen va arriba y el texto abajo */
+        min-height: auto;
+        /* Quitamos la altura fija en móviles */
+    }
+
+    .card-img-container-split {
+        min-height: 300px;
+        /* Altura de la foto en celular */
+        flex: 0 0 100%;
+    }
+
+    .card-body-split {
+        flex: 0 0 100%;
+        padding: 1.5rem;
+    }
+}
+
+/* ══════════════════════════════════════════
+       SECCIÓN DE TRABAJOS
+══════════════════════════════════════════ */
+/* --- ESTILOS DE LA GALERÍA --- */
+
+/* ==========================================================================
+   SECCIÓN: GALERÍA ROSA DIFUMINADA (ESTILO BRINEL PREMIUM)
+   ========================================================================== */
+
+/* 1. Fondo de la SECCIÓN completa */
+/* Crea un degradado suave que va de blanco puro a un rosa crema muy sutil */
+.bg-fade-rosa {
+    background: linear-gradient(to bottom, #ffffff 0%, #fdf2f6 100%);
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+/* 2. El Contenedor del Carrusel (La Caja) */
+.brinel-fade-box {
+    max-width: 1000px;
+    /* Ancho elegante para escritorio */
+    margin: 0 auto;
+    border-radius: 30px;
+
+    /* SOMBRA DIFUMINADA: Es el resplandor fucsia suave alrededor de la caja */
+    box-shadow: 0 20px 60px rgba(214, 51, 132, 0.12);
+
+    /* Eliminamos cualquier borde o fondo oscuro previo */
+    background-color: transparent !important;
+    border: none !important;
+    overflow: hidden;
+    /* Mantiene el redondeado de las esquinas */
+}
+
+/* 3. Contenedor interno de las fotos */
+.brinel-contain-box {
+    /* Fondo translúcido para que las fotos se mezclen con el rosa de la sección */
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+}
+
+/* 4. Estilo de la IMAGEN (Clave para que no se vea cortada) */
+.img-completa-contain {
+    height: 700px;
+    /* Altura imponente */
+    width: 100%;
+    /* Ocupa el ancho del contenedor */
+
+    /* PROPIEDAD MÁGICA: Muestra la foto ENTERA. 
+       Los lados sobrantes mostrarán el fondo rosa de la sección */
+    object-fit: contain;
+
+    display: block;
+    margin: 0 auto;
+    /* Centrado horizontal */
+}
+
+/* 5. Efecto de DIFUMINADO (Fade) entre fotos */
+.carousel-fade .carousel-item {
+    transition-duration: 1s;
+    /* Un segundo de transición suave */
+    opacity: 0;
+    transition-property: opacity;
+}
+
+.carousel-fade .carousel-item.active {
+    opacity: 1;
+}
+
+/* 6. Estilo de los Indicadores (Puntitos) */
+.carousel-indicators [data-bs-target] {
+    background-color: #d63384;
+    /* Color fucsia de tu marca */
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    /* Los hace círculos perfectos */
+    border: none;
+    margin: 0 6px;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+}
+
+.carousel-indicators .active {
+    opacity: 1;
+    transform: scale(1.2);
+    /* El punto activo crece un poquito */
+}
+
+/* 7. Color de las FLECHAS (Para que resalten sobre el rosa) */
+.brinel-icon-dark {
+    /* Este filtro convierte la flecha blanca en un tono fucsia oscuro elegante */
+    filter: invert(32%) sepia(87%) saturate(2058%) hue-rotate(307deg) brightness(91%) contrast(93%);
+    width: 3rem;
+    height: 3rem;
+}
+
+/* 8. Ajuste para que el Navbar no tape el título al navegar */
+#galeriaBrinel {
+    scroll-margin-top: 120px;
+}
+
+/* ==========================================================================
+   ADAPTACIÓN PARA MÓVILES (RESPONSIVE)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .bg-fade-rosa {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .img-completa-contain {
+        height: 450px;
+        /* Reducimos la altura en celulares para mejor visibilidad */
+    }
+
+    .brinel-fade-box {
+        margin: 0 10px;
+        /* Margen pequeño a los lados en móvil */
+        border-radius: 20px;
+    }
+}
+
+/* ══════════════════════════════════════════
+       SECCIÓN FORMULARIO DE CITA
+══════════════════════════════════════════ */
+
+/* Fondo del formulario con degradado rosado */
+#cita {
+    background: linear-gradient(160deg, var(--fucsia-suave) 0%, #fff 50%, var(--fucsia-claro) 100%);
+}
+
+/* Contenedor visual del formulario */
+.form-wrapper {
+    background: var(--blanco);
+    border-radius: 20px;
+    /* Bordes muy redondeados */
+    box-shadow: 0 20px 60px rgba(214, 51, 132, 0.15);
+    /* Sombra suave */
+    padding: 3rem;
+    /* Espaciado generoso */
+    border: 1px solid rgba(214, 51, 132, 0.1);
+    max-width: 600px;
+    /* Ancho máximo */
+    margin: 0 auto;
+    /* Centrado */
+}
+
+/* Etiqueta de cada campo del formulario */
+.form-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--texto-medio);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+/* Estilos de los campos input y select */
+.form-control,
+.form-select {
+    border: 1.5px solid rgba(214, 51, 132, 0.2) !important;
+    /* Borde fucsia sutil */
+    background: var(--fucsia-suave) !important;
+    /* Fondo rosado muy suave */
+    border-radius: 10px !important;
+    /* Bordes redondeados */
+    font-family: 'Jost', sans-serif;
+    font-size: 0.92rem;
+    color: var(--texto-oscuro) !important;
+    padding: 0.75rem 1rem;
+    /* Espaciado interno cómodo */
+    transition: all 0.3s;
+}
+
+/* Estado de foco en los campos */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--fucsia) !important;
+    /* Borde fucsia sólido */
+    background: #fff !important;
+    /* Fondo blanco */
+    box-shadow: 0 0 0 3px rgba(214, 51, 132, 0.12) !important;
+    /* Halo fucsia */
+}
+
+/* Grupo de ícono + input (input group de Bootstrap) */
+.input-group-text {
+    background: var(--fucsia-claro) !important;
+    /* Fondo rosado claro */
+    border: 1.5px solid rgba(214, 51, 132, 0.2) !important;
+    border-right: none !important;
+    /* Sin borde derecho (fusiona con el input) */
+    border-radius: 10px 0 0 10px !important;
+    /* Solo bordes izquierdos redondeados */
+    color: var(--fucsia);
+    /* Ícono fucsia */
+}
+
+/* Input cuando va acompañado de un input-group */
+.input-group .form-control {
+    border-left: none !important;
+    /* Sin borde izquierdo */
+    border-radius: 0 10px 10px 0 !important;
+    /* Solo bordes derechos redondeados */
+}
+
+/* ══════════════════════════════════════════
+       FOOTER
+══════════════════════════════════════════ */
+/* ==========================================================================
+   CONFIGURACIÓN DEL FOOTER (ANCHO TOTAL)
+   ========================================================================== */
+
+footer {
+    /* 1. Fondo degradado oscuro */
+    background: linear-gradient(160deg, #2d1020 0%, #1a0a13 100%);
+    color: rgba(255, 240, 248, 0.7);
+
+    /* 2. ESTO ES LO QUE HACE QUE OCUPE TODA LA PÁGINA */
+    width: 100% !important;
+    /* Fuerza el ancho total */
+    margin: 0 !important;
+    /* Elimina márgenes que lo compriman */
+    padding: 4rem 0 2rem;
+    /* 4rem de espacio arriba, 2rem abajo */
+    position: relative;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    /* Evita que nada se salga por los lados */
+}
+
+/* Logo "Brinel Beauty" en el footer */
+.footer-brand {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3rem;
+    color: rgba(248, 180, 214, 0.9);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+/* Subtítulo debajo del logo */
+.footer-sub {
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255, 240, 248, 0.4);
+    font-family: 'Jost', sans-serif;
+}
+
+/* Links de Navegación */
+.footer-nav-link {
+    color: rgba(255, 240, 248, 0.6);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.footer-nav-link:hover {
+    color: #f8b4d6;
+    /* Rosado claro al pasar el mouse */
+    padding-left: 5px;
+    /* Pequeño movimiento a la derecha */
+}
+
+/* Separador fucsia sutil */
+.footer-divider {
+    border-color: rgba(214, 51, 132, 0.2);
+    margin: 2rem 0;
+}
+
+/* --- BOTONES DE REDES SOCIALES --- */
+
+.social-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1.5px solid rgba(255, 240, 248, 0.2);
+}
+
+/* WhatsApp */
+.social-btn.whatsapp {
+    color: #25D366;
+    background: rgba(37, 211, 102, 0.1);
+}
+
+/* Facebook */
+.social-btn.facebook {
+    color: #1877F2;
+    background: rgba(24, 119, 242, 0.1);
+}
+
+/* Instagram */
+.social-btn.instagram {
+    color: #E1306C;
+    background: rgba(225, 48, 108, 0.1);
+}
+
+/* TikTok */
+.social-btn.tiktok {
+    color: #fff;
+    background: #000;
+}
+
+/* Efecto hover general para todas las redes */
+.social-btn:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Texto de Copyright final */
+.footer-copy {
+    font-size: 0.78rem;
+    color: rgba(255, 240, 248, 0.35);
+    line-height: 1.6;
+}
+
+/* AJUSTE PARA EL BODY: Evita espacios blancos a los lados de la web */
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════
+       ANIMACIONES KEYFRAME
+══════════════════════════════════════════ */
+
+/* Entra desde la izquierda */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Entra desde abajo con fade */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de pulso suave */
+@keyframes pulse-soft {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+/* Clases de animación aplicables a elementos */
+.anim-fadeInLeft {
+    animation: fadeInLeft 0.9s ease both;
+}
+
+.anim-fadeInUp {
+    animation: fadeInUp 0.9s ease both;
+}
+
+/* ══════════════════════════════════════════
+       UTILIDADES EXTRA
+══════════════════════════════════════════ */
+
+/* Padding vertical extra para secciones grandes */
+.py-section {
+    padding-top: 6rem !important;
+    padding-bottom: 6rem !important;
+}
+
+/* Fondo con patrón de puntos decorativo */
+.bg-dots {
+    background-image: radial-gradient(rgba(214, 51, 132, 0.08) 1px, transparent 1px);
+    background-size: 20px 20px;
+    /* Cada punto cada 20px */
+}
