@@ -470,6 +470,21 @@ html {
     /* Sombra para visibilidad */
 }
 
+.slide-deco {
+    font-size: 3.5rem;
+    /* Ajusta el tamaño aquí */
+    color: #d4a373;
+    /* Un tono dorado o rosado que combine con tu marca */
+    opacity: 0.8;
+    /* Para que sean sutiles y no distraigan del texto */
+    transition: transform 0.3s ease;
+}
+
+/* Opcional: un pequeño efecto al pasar el mouse */
+.slide-deco:hover {
+    transform: scale(1.2) rotate(10deg);
+}
+
 /* ══════════════════════════════════════════
        SECCIÓN HEADER CON CARDS DE INFORMACIÓN
 ══════════════════════════════════════════ */
