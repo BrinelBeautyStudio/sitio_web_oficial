@@ -1,4 +1,5 @@
 {
+    "id": "/index.html",
     "name": "Brinel Beauty Studio & Academy",
     "short_name": "Brinel Beauty",
     "icons": [
@@ -21,6 +22,21 @@
             "src": "logos/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "logos/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Brinel Beauty Desktop"
+        },
+        {
+            "src": "logos/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "label": "Brinel Beauty Mobile"
         }
     ],
     "theme_color": "#ffffff",
