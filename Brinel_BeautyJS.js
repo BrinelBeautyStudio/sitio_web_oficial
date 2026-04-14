@@ -29,6 +29,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- 3. CERRAR MENÚ MÓVIL AUTOMÁTICAMENTE AL HACER CLIC ---
+    const navLinks = document.querySelectorAll('.nav-link, .btn-brinel'); // Selecciona enlaces y el botón de agenda
+    const menuMenu = document.getElementById('navMenu');
+
+    // Verificamos que el menú exista para evitar errores en consola
+    if (menuMenu) {
+        // Inicializamos el componente Collapse de Bootstrap
+        const bsCollapse = new bootstrap.Collapse(menuMenu, { toggle: false });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                // Solo cerramos si el menú está desplegado (tiene la clase 'show')
+                if (menuMenu.classList.contains('show')) {
+                    bsCollapse.hide();
+                }
+            });
+        });
+    }
+
     // Inicialización y Event Listeners de Scroll
     activeRevealOnScroll();
     handleNavbarScroll();
@@ -36,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', handleNavbarScroll);
 
 
-    // --- 3. ENVÍO DE FORMULARIO A WHATSAPP ---
+    // --- 4. ENVÍO DE FORMULARIO A WHATSAPP ---
     const citaForm = document.getElementById('citaForm');
 
     if (citaForm) {
@@ -78,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = `https://api.whatsapp.com/send?phone=${miNumero}&text=${encodeURIComponent(textoWA)}`;
 
             // F. Redirección y Feedback Visual
-            // En móviles, es mejor usar location.href para evitar bloqueos de pop-ups
             setTimeout(() => {
                 // Abrir WhatsApp
                 window.location.href = url;

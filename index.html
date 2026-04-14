@@ -50,53 +50,47 @@
      NAVBAR – BARRA DE NAVEGACIÓN FIJA
 ══════════════════════════════════════════════ -->
   <nav class="navbar navbar-expand-lg fixed-top" id="navbar">
-    <!-- navbar: componente Bootstrap | navbar-expand-lg: menú normal en pantallas grandes | fixed-top: fija arriba -->
     <div class="container">
-      <!-- container: limita el ancho máximo y centra el contenido -->
 
-      <!-- Logo: imagen + texto -->
       <a class="navbar-brand-wrap" href="#inicio">
-        <!-- navbar-brand-wrap: clase personalizada para el logo compuesto -->
         <img src="images/logos/logo_Brinel_rosa.png" alt="Logo Brinel Beauty Studio" class="navbar-logo-img"
           onerror="this.style.display='none'" />
-        <!-- 
-        src: ruta de la imagen del logo
-        alt: texto alternativo para accesibilidad
-        onerror: si no carga la imagen, la oculta
-      -->
-        <!-- <div> -->
-        <!-- <span class="navbar-brand-text">Brinel Beauty</span> -->
-        <!-- Nombre en fuente cursiva elegante -->
-        <!-- <span class="navbar-brand-sub">Studio & Academy</span> -->
-        <!-- Subtítulo pequeño -->
-        <!-- </div> -->
       </a>
 
-      <!-- Botón hamburguesa para móvil (Bootstrap lo maneja automáticamente) -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
-        aria-label="Abrir menú">
-        <!-- data-bs-toggle="collapse": activa/desactiva el menú colapsable -->
-        <!-- data-bs-target="#navMenu": apunta al menú con ese ID -->
+        aria-controls="navMenu" aria-expanded="false" aria-label="Abrir menú">
         <span class="navbar-toggler-icon"></span>
-        <!-- Ícono de las 3 líneas (hamburguesa) -->
       </button>
 
-      <!-- Menú de enlaces (colapsable en móvil) -->
       <div class="collapse navbar-collapse" id="navMenu">
-        <!-- collapse: oculto en móvil | navbar-collapse: clase Bootstrap para el menú -->
         <ul class="navbar-nav ms-auto gap-lg-2">
-          <!-- ms-auto: empuja el menú a la derecha | gap-lg-2: espacio entre items en desktop -->
-          <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="#info">Nosotros</a></li>
-          <li class="nav-item"><a class="nav-link" href="#trabajos">Servicios</a></li>
-          <li class="nav-item"><a class="nav-link" href="#galeriaBrinel">Galeria de fotos</a></li>
-          <li class="nav-item"><a class="nav-link" href="#cita">Reservar</a></li>
-          <!-- Botón de acción en el navbar -->
+
+          <li class="nav-item">
+            <a class="nav-link" href="#inicio">Inicio</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#info">Nosotros</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#trabajos">Servicios</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#galeriaBrinel">Galería de fotos</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#cita">Reservar</a>
+          </li>
+
           <li class="nav-item ms-lg-2">
             <a class="btn btn-brinel btn-sm" href="#cita">
               <i class="bi bi-calendar-heart me-1"></i>Agendar Cita
             </a>
           </li>
+
         </ul>
       </div>
 
