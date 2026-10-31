@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'https://mail.google.com/mail/?view=cm&fs=1' +
         `&to=${encodeURIComponent(CORREO_DEV)}` +
         `&su=${encodeURIComponent('Quiero una página web para mi negocio')}` +
-        `&body=${encodeURIComponent('Hola Josué, vi la página de Brinel Beauty y me interesa una página web. ')}`;
+        `&body=${encodeURIComponent('Hola MJ Control Systems, vi la página de Brinel Beauty y me interesa una página web. ')}`;
 
     document.getElementById('anio').textContent = new Date().getFullYear();
 
