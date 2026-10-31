@@ -93,7 +93,7 @@ a { color: inherit; }
     padding: 1.1rem 0;
     transition: background .4s, padding .4s, box-shadow .4s;
 }
-.navbar .logo { height: 84px; width: auto; transition: height .4s; }
+.navbar .logo { height: 78px; width: auto; transition: height .4s; filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .25)); }
 .navbar .logo-rosa { display: none; }
 
 .nav-link {
@@ -119,7 +119,7 @@ a { color: inherit; }
 
 /* Navbar al hacer scroll: blanca con logo rosa */
 .navbar.scrolled { background: rgba(255, 255, 255, .97); backdrop-filter: blur(12px); padding: .45rem 0; box-shadow: 0 6px 30px rgba(42, 15, 31, .08); }
-.navbar.scrolled .logo { height: 56px; }
+.navbar.scrolled .logo { height: 58px; filter: none; }
 .navbar.scrolled .logo-blanco { display: none; }
 .navbar.scrolled .logo-rosa { display: inline; }
 .navbar.scrolled .nav-link { color: var(--texto-medio) !important; }
@@ -448,7 +448,7 @@ a { color: inherit; }
 
 /* ══════════════ FOOTER ══════════════ */
 .footer { background: var(--ciruela); color: rgba(255, 255, 255, .6); padding: 70px 0 30px; }
-.footer-logo { height: 110px; width: auto; }
+.footer-logo { height: 120px; width: auto; }
 .footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.6rem; }
 .footer-links a { text-decoration: none; font-size: .78rem; letter-spacing: 2px; text-transform: uppercase; transition: color .3s; }
 .footer-links a:hover { color: var(--rosa-claro); }
