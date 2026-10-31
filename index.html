@@ -1,931 +1,563 @@
 <!DOCTYPE html>
-<!-- Declaración del tipo de documento HTML5 -->
 <html lang="es">
-<!-- Apertura del documento HTML, idioma español -->
 
 <head>
-  <!-- Sección de metadatos: no se muestra en pantalla -->
-
   <meta charset="UTF-8" />
-  <!-- Codificación de caracteres UTF-8 para soportar acentos y caracteres especiales -->
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Hace la página responsiva en dispositivos móviles -->
+  <title>Brinel Beauty Studio & Academy | Santa Rosa, Guatemala</title>
+  <meta name="description" content="Brinel Beauty Studio & Academy: maquillaje social, peinados, cortes, uñas, diseño de cejas, micropigmentación, extensiones de pestañas y academia de maquillaje profesional en Santa Rosa, Guatemala." />
+  <meta property="og:title" content="Brinel Beauty Studio & Academy" />
+  <meta property="og:description" content="Tu belleza es nuestra pasión y arte. Agenda tu cita por WhatsApp." />
+  <meta property="og:image" content="images/web/maq_social.jpg" />
+  <meta name="theme-color" content="#2a0f1f" />
 
-  <title>Brinel Beauty Studio & Academy</title>
-  <!-- Título que aparece en la pestaña del navegador -->
-
-  <!-- ── Bootstrap 5 CSS ── -->
+  <!-- Bootstrap 5 + íconos (solo se usan íconos funcionales: redes, WhatsApp, flechas) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Hoja de estilos principal de Bootstrap 5 desde CDN -->
-
-  <!-- ── Bootstrap Icons ── -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
-  <!-- Librería de íconos de Bootstrap (bi-whatsapp, bi-facebook, etc.) -->
 
-  <!-- ── Google Fonts ── -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <!-- 
-    Great Vibes    → Fuente cursiva elegante para el nombre "Brinel" (similar al logo)
-    Cormorant Garamond → Fuente serif refinada para títulos secundarios
-    Jost           → Fuente sans-serif limpia para el cuerpo de texto
-  -->
-  <link rel="stylesheet" href="Brinel_BeautyCSS.css">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/logos/favicon-16x16.png">
-  <link rel="manifest" href="images/site.webmanifest">
+  <!-- Fuentes:
+       Cormorant Garamond → títulos editoriales grandes
+       Great Vibes        → toques caligráficos (como el logo)
+       Jost               → texto general -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
+  <link rel="stylesheet" href="Brinel_BeautyCSS.css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="images/logos/favicon-16x16.png" />
+  <link rel="manifest" href="images/site.webmanifest" />
 </head>
 
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script src="Brinel_BeautyJS.js"></script>
-
 
   <!-- ══════════════════════════════════════════════
-     NAVBAR – BARRA DE NAVEGACIÓN FIJA
-══════════════════════════════════════════════ -->
+       NAVBAR (transparente sobre el hero, sólida al bajar)
+  ══════════════════════════════════════════════ -->
   <nav class="navbar navbar-expand-lg fixed-top" id="navbar">
     <div class="container">
 
-      <a class="navbar-brand-wrap" href="#inicio">
-        <img src="images/logos/logo_Brinel_rosa.png" alt="Logo Brinel Beauty Studio" class="navbar-logo-img"
-          onerror="this.style.display='none'" />
+      <a class="navbar-brand p-0" href="#inicio" aria-label="Brinel Beauty, inicio">
+        <img src="images/logos/logo_Brinel_sinfondo.png" alt="Brinel Beauty Studio & Academy" class="logo logo-blanco" />
+        <img src="images/logos/logo_Brinel_rosa.png" alt="" class="logo logo-rosa" aria-hidden="true" />
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
         aria-controls="navMenu" aria-expanded="false" aria-label="Abrir menú">
-        <span class="navbar-toggler-icon"></span>
+        <span class="toggler-linea"></span><span class="toggler-linea"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navMenu">
-        <ul class="navbar-nav ms-auto gap-lg-2">
-
-          <li class="nav-item">
-            <a class="nav-link" href="#inicio">Inicio</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#info">Nosotros</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#trabajos">Servicios</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#galeriaBrinel">Galería de fotos</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#cita">Reservar</a>
-          </li>
-
-          <li class="nav-item ms-lg-2">
-            <a class="btn btn-brinel btn-sm" href="#cita">
-              <i class="bi bi-calendar-heart me-1"></i>Agendar Cita
-            </a>
-          </li>
-
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+          <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#academia">Academia</a></li>
+          <li class="nav-item"><a class="nav-link" href="#galeria">Galería</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tienda">Tienda</a></li>
+          <li class="nav-item"><a class="nav-link" href="#visitanos">Visítanos</a></li>
+          <li class="nav-item ms-lg-3"><a class="btn-brinel btn-nav" href="#cita">Agendar cita</a></li>
         </ul>
       </div>
 
     </div>
   </nav>
-  <!-- Fin NAVBAR -->
 
 
   <!-- ══════════════════════════════════════════════
-     SECCIÓN 1: HERO – CARRUSEL AUTOMÁTICO
-══════════════════════════════════════════════ -->
-  <section id="inicio">
+       1. HERO – texto + collage de fotos reales
+  ══════════════════════════════════════════════ -->
+  <header id="inicio" class="hero">
+    <div class="container">
+      <div class="row align-items-center g-4 g-lg-5">
 
-    <!-- Carrusel Bootstrap 5 -->
-    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
-      <!--
-      id="heroCarousel"        → Identificador único del carrusel
-      carousel slide           → Clase base de Bootstrap para carrusel con transición deslizante
-      carousel-fade            → Transición de fundido en lugar de deslizamiento
-      data-bs-ride="carousel"  → Inicia automáticamente al cargar la página
-      data-bs-interval="4000"  → Cambia de slide cada 4000ms (4 segundos)
-    -->
-
-      <!-- Indicadores (puntitos de navegación) -->
-      <div class="carousel-indicators">
-        <!-- carousel-indicators: posiciona los puntos abajo del carrusel -->
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"
-          aria-label="Slide 1"></button>
-        <!-- data-bs-slide-to="0": navega al slide 0 (primero) al hacer clic | class="active": punto activo inicial -->
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-      </div>
-
-      <!-- Slides del carrusel -->
-      <div class="carousel-inner">
-        <!-- carousel-inner: envuelve todos los slides -->
-
-        <!-- ── SLIDE 1 ── -->
-        <div class="carousel-item active">
-          <!-- carousel-item: cada slide | active: el que se muestra primero -->
-          <div class="carousel-item-custom slide-1">
-            <!-- Decoraciones de flores en las esquinas -->
-            <div class="slide-deco top-left"><i class="bi bi-flower1"></i></div>
-
-            <div class="slide-deco top-right"><i class="bi bi-stars"></i></div>
-
-            <div class="slide-deco bot-left"><i class="bi bi-flower2"></i></div>
-
-            <div class="slide-deco bot-right"><i class="bi bi-flower3"></i></div>
-            <!-- Capa oscura semitransparente para mejorar contraste del texto -->
-            <div class="slide-overlay"></div>
-            <!-- Contenido textual del slide -->
-            <div class="slide-content">
-              <div class="slide-brand">Brinel Beauty</div>
-              <!-- Nombre en fuente cursiva elegante -->
-              <div class="slide-sub">Studio & Academy</div>
-              <h2 class="slide-title">Tu belleza es nuestra<br><em style="font-style:italic;">pasión y arte</em></h2>
-              <p class="slide-desc">Nuestra prioridad es tu belleza y tu autoestima</p>
-              <!-- Botones de acción -->
-              <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="#cita" class="btn btn-brinel">
-                  <i class="bi bi-calendar-heart me-2"></i>Agenda tu Cita
-                </a>
-                <!-- btn-brinel: botón fucsia personalizado -->
-                <a href="#trabajos" class="btn btn-brinel-outline" style="color:#fff; border-color:#fff;">
-                  Ver Servicios
-                </a>
-              </div>
-            </div>
+        <div class="col-lg-6 hero-texto">
+          <p class="hero-kicker">Studio <span>·</span> Academy <span>·</span> Shop</p>
+          <h1 class="hero-titulo">
+            Tu belleza es<br>nuestra <em>pasión</em><br>y nuestro <em>arte</em>
+          </h1>
+          <p class="hero-desc">Nuestra prioridad es tu belleza y tu autoestima. Maquillaje, cabello, uñas, cejas y pestañas en Santa Rosa, Guatemala.</p>
+          <div class="d-flex gap-3 flex-wrap">
+            <a href="#cita" class="btn-brinel">Agenda tu cita</a>
+            <a href="#servicios" class="btn-linea">Ver servicios</a>
           </div>
         </div>
-        <!-- Fin Slide 1 -->
 
-        <!-- ── SLIDE 2 ── -->
-        <div class="carousel-item">
-          <div class="carousel-item-custom slide-2">
-            <div class="slide-deco top-left"><i class="bi bi-brush"></i></div>
-
-            <div class="slide-deco top-right"><i class="bi bi-magic"></i></div>
-
-            <div class="slide-deco bot-left"><i class="bi bi-stars"></i></div>
-
-            <div class="slide-deco bot-right"><i class="bi bi-gem"></i></div>
-            <div class="slide-overlay"></div>
-            <div class="slide-content">
-              <div class="slide-brand">Brinel Beauty</div>
-              <div class="slide-sub">Studio & Academy</div>
-              <h2 class="slide-title">Tienda de<br><em style="font-style:italic;">Cosméticos </em></h2>
-              <p class="slide-desc">Encuentra los mejores productos de belleza para realzar tu estilo.</p>
-              <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="https://www.instagram.com/brinel_shop/" class="btn btn-brinel">
-                  <i class="bi bi-calendar-heart me-2"></i>Visitar Tienda
-                </a>
-                <a href="#info" class="btn btn-brinel-outline" style="color:#fff; border-color:#fff;">
-                  Conócenos
-                </a>
-              </div>
+        <div class="col-lg-6">
+          <div class="hero-collage">
+            <!-- Foto grande: rota entre varias fotos (ver JS) -->
+            <div class="collage-grande" id="heroRotativo">
+              <img src="images/web/maq_social.jpg" alt="Maquillaje social Brinel Beauty" class="activa" />
+              <img src="images/web/trabajo5.jpg" alt="Maquillaje y peinado de fiesta" />
+              <img src="images/web/peinado2.jpg" alt="Peinado con ondas" />
+              <img src="images/web/trabajo2.jpg" alt="Maquillaje para quinceañera" />
             </div>
+            <div class="collage-chica arriba"><img src="images/web/trabajo9.jpg" alt="Maquillaje natural" /></div>
+            <div class="collage-chica abajo"><img src="images/web/trabajo8.jpg" alt="Diseño de uñas" /></div>
+            <div class="collage-sello">Brinel<small>Beauty Studio</small></div>
           </div>
         </div>
-        <!-- Fin Slide 2 -->
-
-        <!-- ── SLIDE 3 ── -->
-        <div class="carousel-item">
-          <div class="carousel-item-custom slide-3">
-            <div class="slide-deco top-left"><i class="bi bi-palette"></i></div>
-
-            <div class="slide-deco top-right"><i class="bi bi-mortarboard"></i></div>
-
-            <div class="slide-deco bot-left"><i class="bi bi-award"></i></div>
-
-            <div class="slide-deco bot-right"><i class="bi bi-lightbulb"></i></div>
-            <div class="slide-overlay"></div>
-            <div class="slide-content">
-              <div class="slide-brand">Brinel Beauty</div>
-              <div class="slide-sub">Studio & Academy</div>
-              <h2 class="slide-title">Academia de<br><em style="font-style:italic;">Belleza Profesional</em></h2>
-              <p class="slide-desc">Aprende de las mejores. Cursos certificados para convertirte en una maquillista
-                profesional.</p>
-              <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="#cita" class="btn btn-brinel">
-                  <i class="bi bi-mortarboard me-2"></i>Inscribirme
-                </a>
-                <a href="#trabajos" class="btn btn-brinel-outline" style="color:#fff; border-color:#fff;">
-                  Ver Cursos
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Fin Slide 3 -->
 
       </div>
-      <!-- Fin carousel-inner -->
-
-      <!-- Flecha anterior del carrusel -->
-      <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-        <!-- data-bs-slide="prev": navega al slide anterior -->
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-        <!-- visually-hidden: texto solo para lectores de pantalla (accesibilidad) -->
-      </button>
-
-      <!-- Flecha siguiente del carrusel -->
-      <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-        <!-- data-bs-slide="next": navega al slide siguiente -->
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Siguiente</span>
-      </button>
-
     </div>
-    <!-- Fin carrusel Bootstrap -->
+  </header>
 
-  </section>
-  <!-- Fin SECCIÓN HERO -->
+  <!-- Cinta animada con los servicios -->
+  <div class="cinta" aria-hidden="true">
+    <div class="cinta-pista">
+      <span>Maquillaje social</span><span>Peinados</span><span>Cortes</span><span>Diseño de uñas</span>
+      <span>Micropigmentación</span><span>Extensiones de pestañas</span><span>Diseño de cejas</span><span>Academia</span>
+      <span>Maquillaje social</span><span>Peinados</span><span>Cortes</span><span>Diseño de uñas</span>
+      <span>Micropigmentación</span><span>Extensiones de pestañas</span><span>Diseño de cejas</span><span>Academia</span>
+    </div>
+  </div>
 
 
   <!-- ══════════════════════════════════════════════
-     SECCIÓN 2: INFORMACIÓN – HEADER CON CARDS EDITABLES
-══════════════════════════════════════════════ -->
-  <section id="info" class="py-section bg-dots">
-    <!-- py-section: padding vertical personalizado | bg-dots: fondo con puntitos decorativos -->
+       2. NOSOTROS – misión, visión y valores
+  ══════════════════════════════════════════════ -->
+  <section id="nosotros" class="seccion">
+    <div class="container">
+      <div class="row g-4 g-lg-5 align-items-center">
+
+        <div class="col-lg-6 reveal">
+          <div class="nosotros-fotos">
+            <img src="images/web/salon2.jpg" alt="Inauguración de Brinel Beauty" class="foto-principal" />
+            <img src="images/web/salon_interior.jpg" alt="Interior del salón Brinel Beauty" class="foto-secundaria" />
+          </div>
+        </div>
+
+        <div class="col-lg-6 reveal">
+          <p class="etiqueta">Quiénes somos</p>
+          <h2 class="titulo">Un espacio creado para <em>realzar</em> tu belleza</h2>
+          <p class="parrafo">Brinel Beauty es un espacio dedicado a realzar la belleza de cada mujer con dedicación, productos premium y técnicas vanguardistas que transforman tu imagen y elevan tu confianza.</p>
+
+          <div class="mvv">
+            <div class="mvv-item">
+              <span class="mvv-num">01</span>
+              <div>
+                <h3>Misión</h3>
+                <p>Proporcionar una educación de calidad en técnicas de maquillaje, empoderando a los estudiantes para que expresen su creatividad y desarrollen habilidades profesionales en la industria del maquillaje.</p>
+              </div>
+            </div>
+            <div class="mvv-item">
+              <span class="mvv-num">02</span>
+              <div>
+                <h3>Visión</h3>
+                <p>Convertirnos en un referente reconocido internacionalmente en la formación de maquilladores profesionales, impulsando la innovación y la excelencia en la industria del maquillaje.</p>
+              </div>
+            </div>
+            <div class="mvv-item">
+              <span class="mvv-num">03</span>
+              <div>
+                <h3>Valores</h3>
+                <p>Pasión, profesionalismo, creatividad, confianza y amor por cada clienta y alumna. Cada visita es una experiencia única y personalizada.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       3. SERVICIOS – tarjetas con foto + filtro por categoría
+       Cada botón "Agendar" usa data-servicio (el JS arma el link de WhatsApp)
+  ══════════════════════════════════════════════ -->
+  <section id="servicios" class="seccion fondo-rubor">
     <div class="container">
 
-      <!-- Encabezado de la sección -->
+      <div class="row align-items-end mb-4 g-3">
+        <div class="col-lg-6 reveal">
+          <p class="etiqueta">Lo que hacemos</p>
+          <h2 class="titulo mb-0">Nuestros <em>servicios</em></h2>
+        </div>
+        <div class="col-lg-6 reveal">
+          <p class="parrafo mb-0">Tratamientos realizados por expertas para que luzcas y te sientas extraordinaria. Toca "Agendar" y te atendemos por WhatsApp.</p>
+        </div>
+      </div>
+
+      <div class="filtros reveal" role="tablist">
+        <button class="filtro activo" data-filtro="todos">Todos</button>
+        <button class="filtro" data-filtro="maquillaje">Maquillaje</button>
+        <button class="filtro" data-filtro="cabello">Cabello</button>
+        <button class="filtro" data-filtro="unas">Uñas</button>
+        <button class="filtro" data-filtro="mirada">Cejas y pestañas</button>
+      </div>
+
+      <div class="row g-4" id="gridServicios">
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="maquillaje">
+          <article class="serv-card">
+            <img src="images/web/maq_social.jpg" alt="Maquillaje social" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q300</span>
+              <h3>Maquillaje Social</h3>
+              <p>Look sofisticado y duradero con técnicas de contorno, ideal para bodas, quince años y fiestas.</p>
+              <a href="#" class="serv-btn" data-servicio="Maquillaje Social">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="maquillaje">
+          <article class="serv-card">
+            <img src="images/web/maq_natural.jpg" alt="Maquillaje natural" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q225</span>
+              <h3>Maquillaje Natural</h3>
+              <p>Belleza auténtica sin filtros. Acabado radiante y profesional para lucir fresca cada día.</p>
+              <a href="#" class="serv-btn" data-servicio="Maquillaje Natural">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="maquillaje">
+          <article class="serv-card">
+            <img src="images/web/maq_express.jpg" alt="Maquillaje express" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q175</span>
+              <h3>Maquillaje Express</h3>
+              <p>Resalta tu esencia con frescura y luz. Un look rápido pero profesional con texturas ligeras.</p>
+              <a href="#" class="serv-btn" data-servicio="Maquillaje Express">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="cabello">
+          <article class="serv-card">
+            <img src="images/web/peinado2.jpg" alt="Peinados" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q125</span>
+              <h3>Peinados</h3>
+              <p>Estilos modernos y clásicos para eventos o para el día a día, resaltando tu belleza en cada ocasión.</p>
+              <a href="#" class="serv-btn" data-servicio="Peinado">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="cabello">
+          <article class="serv-card">
+            <img src="images/web/corte1.jpg" alt="Cortes de cabello" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q40</span>
+              <h3>Cortes</h3>
+              <p>Cortes modernos y clásicos adaptados a tu rostro y personalidad, con acabado profesional.</p>
+              <a href="#" class="serv-btn" data-servicio="Corte">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="unas">
+          <article class="serv-card">
+            <img src="images/web/unas1.jpg" alt="Diseño de uñas" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q150</span>
+              <h3>Diseño de Uñas</h3>
+              <p>Hacemos realidad el diseño que imagines o te asesoramos para crear algo único para ti.</p>
+              <a href="#" class="serv-btn" data-servicio="Diseño de Uñas">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="mirada">
+          <article class="serv-card">
+            <img src="images/web/cejas1.jpg" alt="Diseño de cejas, antes y después" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q150</span>
+              <h3>Diseño de Cejas</h3>
+              <p>Realzamos la forma natural de tus cejas con precisión: depilación, perfilado y definición.</p>
+              <a href="#" class="serv-btn" data-servicio="Diseño de Cejas">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="mirada">
+          <article class="serv-card">
+            <img src="images/web/micro1.jpg" alt="Micropigmentación, antes y después" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q700</span>
+              <h3>Micropigmentación</h3>
+              <p>Técnicas avanzadas para cejas perfectas y duraderas, con un acabado hiperrealista.</p>
+              <a href="#" class="serv-btn" data-servicio="Micropigmentación">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 servicio" data-cat="mirada">
+          <article class="serv-card">
+            <img src="images/web/pestanas_ext.jpg" alt="Extensiones de pestañas" loading="lazy" />
+            <div class="serv-info">
+              <span class="serv-precio">Desde Q250</span>
+              <h3>Extensiones de Pestañas</h3>
+              <p>Pestañas voluminosas y definidas para una mirada impactante.</p>
+              <a href="#" class="serv-btn" data-servicio="Extensión de Pestañas">Agendar <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       4. ACADEMIA (sección oscura)
+  ══════════════════════════════════════════════ -->
+  <section id="academia" class="seccion fondo-oscuro">
+    <div class="container">
+      <div class="row g-4 g-lg-5 align-items-center">
+
+        <div class="col-lg-6 order-lg-2 reveal">
+          <p class="etiqueta claro">Brinel Academy</p>
+          <h2 class="titulo claro">Aprende de las <em>mejores</em></h2>
+          <p class="parrafo claro">Cursos certificados para convertirte en maquillista profesional. Aprende las técnicas más avanzadas de maquillaje y belleza con práctica real en nuestro estudio.</p>
+
+          <ul class="cursos">
+            <li><span>Curso intensivo</span> Maquillista profesional para eventos sociales</li>
+            <li><span>Carrera</span> Maquillista profesional para cualquier tipo de evento</li>
+            <li><span>Personalizado</span> Automaquillaje profesional 100% a tu medida</li>
+            <li><span>Y más</span> Todos los cursos incluyen certificado</li>
+          </ul>
+
+          <a href="#" class="btn-brinel" id="btnAcademia">Quiero inscribirme</a>
+        </div>
+
+        <div class="col-lg-6 order-lg-1 reveal">
+          <div class="academia-fotos">
+            <img src="images/web/alumnas3.jpg" alt="Graduación de alumnas Brinel Academy" class="af-ancha" loading="lazy" />
+            <img src="images/web/alumnas1.jpg" alt="Alumnas con su certificado" loading="lazy" />
+            <img src="images/web/alumnas2.jpg" alt="Alumna certificada" loading="lazy" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       5. GALERÍA – mosaico + visor
+  ══════════════════════════════════════════════ -->
+  <section id="galeria" class="seccion">
+    <div class="container">
       <div class="text-center mb-5 reveal">
-        <!-- text-center: texto centrado | mb-5: margen inferior | reveal: animación al hacer scroll -->
-        <p class="sec-tag">Quiénes somos</p>
-        <h2 class="sec-title mt-1">Sobre <em>Brinel Beauty</em></h2>
-        <p class="mt-2"
-          style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--texto-medio); max-width:550px; margin:0 auto;">
-          Brinel Beauty es un espacio dedicado a realzar la belleza de cada mujer con dedicación, productos premium y
-          técnicas vanguardistas que transforman tu imagen y elevan tu confianza
-        </p>
-        <div class="divisor"></div>
-        <!-- Línea decorativa degradada -->
+        <p class="etiqueta">Galería</p>
+        <h2 class="titulo">Clientas <em>satisfechas</em></h2>
+        <p class="parrafo mx-auto" style="max-width:520px;">Cada rostro es una historia. Toca una foto para verla completa.</p>
       </div>
 
-      <!-- Fila de cards (Bootstrap grid: 1 col en móvil, 2 en tablet, 3 en desktop) -->
-      <div class="row g-4">
-        <!-- g-4: gap (espacio) entre columnas y filas de nivel 4 -->
-
-        <!-- Card 1: Misión -->
-        <div class="row g-4">
-          <div class="col-sm-6 col-lg-4 reveal">
-            <div class="info-card-giant h-100">
-              <div class="card-img-giant" style="background-image: url('images/salon/Mayu_ignauracion1.jpeg');">
-                <div class="card-img-overlay"></div>
-                <h5 class="card-title-over"><i class="bi bi-rocket-takeoff me-2"></i>Nuestra Misión</h5>
-              </div>
-              <div class="p-4 text-center">
-                <textarea class="card-editable-giant" rows="5"
-                  readonly>Proporcionar una educación de calidad en técnicas de maquillaje, empoderando a los estudiantes para que expresen su creatividad y desarrollen habilidades profesionales en la industria del maquillaje.</textarea>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-sm-6 col-lg-4 reveal">
-            <div class="info-card-giant h-100">
-              <div class="card-img-giant" style="background-image: url('images/salon/Mayu_ignaguracion2.jpeg');">
-                <div class="card-img-overlay"></div>
-                <h5 class="card-title-over"><i class="bi bi-eye me-2"></i>Nuestra Visión</h5>
-              </div>
-              <div class="p-4 text-center">
-                <textarea class="card-editable-giant" rows="5"
-                  readonly>Convertirnos en un referente reconocido internacionalmente en la formación de maquilladores profesionales, impulsando la innovación y la excelencia en la industria del maquillaje.</textarea>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-sm-6 col-lg-4 reveal">
-            <div class="info-card-giant h-100">
-              <div class="card-img-giant" style="background-image: url('images/alumnas/alumnas1.jpeg');">
-                <div class="card-img-overlay"></div>
-                <h5 class="card-title-over"><i class="bi bi-heart-fill me-2"></i>Nuestros Valores</h5>
-              </div>
-              <div class="p-4 text-center">
-                <textarea class="card-editable-giant" rows="5"
-                  readonly>Pasión, profesionalismo, creatividad, confianza y amor por cada clienta y alumna. Cada visita es una experiencia única y personalizada.</textarea>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-sm-6 col-lg-4 reveal">
-            <div class="info-card-giant h-100">
-              <div class="card-img-giant" style="background-image: url('images/maquillajes/maquillaje3.jpeg');">
-                <div class="card-img-overlay"></div>
-                <h5 class="card-title-over"><i class="bi bi-clock-history me-2"></i>Horarios de Atención</h5>
-              </div>
-              <div class="p-4 text-center">
-                <textarea class="card-editable-giant" rows="5" readonly>Martes – Viernes: 10:00 am – 6:00 pm
-Sábados: 10:00 am – 4:00 pm
-Lunes y Domingos: Cerrados</textarea>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-sm-6 col-lg-4 reveal">
-            <div class="info-card-giant h-100">
-              <div class="card-img-giant" style="background-image: url('images/salon/salon_interior1.jpeg');">
-                <div class="card-img-overlay"></div>
-                <h5 class="card-title-over"><i class="bi bi-geo-alt-fill me-2"></i>Ubicaciones</h5>
-              </div>
-              <div class="p-4 text-center">
-                <textarea class="card-editable-giant" rows="5" readonly>1. Nueva Santa Rosa, Canton Palin, Guatemala. 
-2. 1ra.Av. 7-69 zona 1, Casillas, Santa Rosa, Guatemala.</textarea>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-sm-6 col-lg-4 reveal">
-            <div class="info-card-giant h-100">
-              <div class="card-img-giant" style="background-image: url('images/maquillajes/Maquillaje5.jpeg');">
-                <div class="card-img-overlay"></div>
-                <h5 class="card-title-over"><i class="bi bi-chat-left-dots-fill me-2"></i>Contáctanos</h5>
-              </div>
-              <div class="p-4">
-                <p class="card-label text-center mb-2">Información de contacto</p>
-                <textarea class="card-editable-giant" rows="5" readonly>WHATSAPP: 55126664
-FACEBOOK: Brinel Academia
-INSTAGRAM: @brinelbeauty
-TIKTOK: brinelbeauty</textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Fin SECCIÓN INFORMACIÓN -->
-
-
-        <!-- ══════════════════════════════════════════════
-     SECCIÓN 3: TRABAJOS / SERVICIOS
-══════════════════════════════════════════════ -->
-        <section id="trabajos" class="py-section">
-          <div class="container">
-
-            <!-- Encabezado de la sección -->
-            <div class="text-center mb-5 reveal">
-              <p class="sec-tag">Lo que hacemos</p>
-              <h2 class="sec-title mt-1">Nuestros <em>Servicios</em></h2>
-              <p class="mt-2"
-                style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--texto-medio); max-width:500px; margin:0 auto;">
-                Tratamientos exclusivos realizados por expertas para que luzcas y te sientas extraordinaria.
-              </p>
-              <div class="divisor"></div>
-            </div>
-
-            <!-- Primera fila de servicios -->
-            <div class="row g-4 mb-5">
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/cortes_y_peinados/corte1.jpeg" alt="Cortes" class="img-split-view">
-                    </div>
-                    <!-- Cortes -->
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Cortes</h5>
-                        <p>Cortes modernos y clásicos adaptados a tu rostro y personalidad con acabado profesional.</p>
-
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q40</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20Agendar%20un%20Corte" target="_blank"
-                            class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Peinados -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/cortes_y_peinados/Peinado2.jpeg" alt="Peinados" class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Peinados</h5>
-                        <p>Estilos modernos y clásicos para eventos o diario, resaltando tu belleza en cada ocasión.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q125</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20Agendar%20un%20Peinado"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Uñas -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/uñas/Uñas1.jpeg" alt="Uñas" class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Diseño de Uñas</h5>
-                        <p>Hacemos realidad el diseño que imagines o te asesoramos para crear algo único para ti.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q150</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20Agendar%20un%20Diseño%20de%20Uñas"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Maquillaje Natural -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/maquillajes/Maquillaje_Natural1.jpeg" alt="Natural" class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Maquillajes Naturales</h5>
-                        <p>Belleza auténtica sin filtros. Acabado radiante y profesional para lucir fresca cada día.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q225</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20Agendar%20un%20Maquillaje%20Natural"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Maquillaje Social -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/maquillajes/Maquillaje_Social1.jpeg" alt="Social" class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Maquillajes Sociales</h5>
-                        <p>Look sofisticado y duradero con técnicas de contorno ideales para bodas y fiestas.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q300</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20Agendar%20un%20Maquillaje%20Social"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Maquillaje Express -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/maquillajes/Maquillaje_Expres1.jpeg" alt="Express" class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Maquillajes Express</h5>
-                        <p>Resalta tu esencia con frescura y luz. Un look rápido pero profesional con texturas ligeras.
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q175</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20Agendar%20un%20Maquillaje%20Express"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Depilación -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/pestañas_y_cejas/Cejas1.jpeg" alt="Cejas" class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Diseño de Cejas</h5>
-                        <p>Realzamos la forma natural de tus cejas con precisión. Depilación, perfilado y definición.
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q150</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20Agendar%20un%20Diseño%20de%20Cejas"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Micropigmentación -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/pestañas_y_cejas/Micropigmentación1.jpeg" alt="Micro" class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Micropigmentación</h5>
-                        <p>Técnicas avanzadas para cejas perfectas y duraderas con un acabado hiperrealista.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q700</span>
-                          <a href="https://api.whatsapp.com/send?phone=50255126664&text=Hola! Quiero Agendar un Diseño de Micropigmentación"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Extensiones de pestañas -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/pestañas_y_cejas/Extensión_Pestañas1.jpeg" alt="Extensiones de pestañas"
-                        class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Extensiones de pestañas</h5>
-                        <p>Pestañas voluminosas y definidas para una mirada impactante.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Desde Q250</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20Agendar%un%Diseño%20de%20Micropigmentación"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Academia -->
-              <div class="col-sm-12 col-lg-6 reveal">
-                <div class="trabajo-card-split h-100">
-                  <div class="row g-0 h-100">
-                    <div class="col-md-6 card-img-container-split">
-                      <img src="images/alumnas/alumnas3.jpeg" alt="Academia" class="img-split-view">
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card-body-split h-100 d-flex flex-column">
-                        <h5>Academia</h5>
-                        <p>Aprende las técnicas más avanzadas de maquillaje y belleza con nuestros cursos especializados
-                          contamos con diferentes cursos:
-                          Curso intensivo de maquillista profesional para eventos sociales, Carrera de maquillista
-                          profesional para cualquier tipo de evento, Curso de automaquillaje profesional 100%
-                          personalizado, y muchos mas todos con certificado incluido.
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                          <span class="trabajo-precio">Consulta por precios</span>
-                          <a href="https://wa.me/50255126664?text=Hola!%20Quiero%20información%20sobre%20la%20academia"
-                            target="_blank" class="btn-agendar-sm">Agendar</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-        </section>
-        <!-- Fin SECCIÓN SERVICIOS -->
-
-        <!-- ══════════════════════════════════════════════
-     SECCIÓN 4: Sección de trabajos
-══════════════════════════════════════════════ -->
-        <section id="galeria-seccion" class="py-section bg-fade-rosa reveal">
-          <div class="container">
-
-            <div class="text-center mb-5" id="galeriaBrinel">
-              <p class="sec-tag">Galeria de fotos</p>
-              <h2 class="sec-title mt-1">Clientas <em>satisfechas</em></h2>
-              <div class="divisor"></div>
-            </div>
-
-            <div id="carouselClientas" class="carousel slide carousel-fade brinel-fade-box" data-bs-ride="carousel">
-
-              <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="2"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="3"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="4"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="5"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="6"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="7"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="8"></button>
-                <button type="button" data-bs-target="#carouselClientas" data-bs-slide-to="9"></button>
-              </div>
-
-              <div class="carousel-inner brinel-contain-box">
-
-                <div class="carousel-item active" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos1.jpeg" alt="Cliente 1" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos2.jpeg" alt="Cliente 2" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos3.jpeg" alt="Cliente 3" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos4.jpeg" alt="Cliente 4" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos5.jpeg" alt="Cliente 5" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos6.jpeg" alt="Cliente 6" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos7.jpeg" alt="Cliente 7" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos8.jpeg" alt="Cliente 8" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos9.jpeg" alt="Cliente 9" class="img-completa-contain">
-                </div>
-
-                <div class="carousel-item" data-bs-interval="3000">
-                  <img src="images/trabajos/trabajos10.jpeg" alt="Cliente 10" class="img-completa-contain">
-                </div>
-
-              </div>
-
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselClientas"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon brinel-icon-dark"></span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselClientas"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon brinel-icon-dark"></span>
-              </button>
-
-            </div>
-          </div>
-        </section>
-        <!-- ══════════════════════════════════════════════
-     SECCIÓN 6: FORMULARIO DE CITA
-══════════════════════════════════════════════ -->
-        <section id="cita" class="py-section">
-          <div class="container">
-
-            <div class="text-center mb-5 reveal">
-              <p class="sec-tag">Reserva tu espacio</p>
-              <h2 class="sec-title mt-1">Agenda tu <em>Cita</em></h2>
-              <p class="mt-2"
-                style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--texto-medio); max-width:480px; margin:0 auto;">
-                Déjanos tus datos y te redirigiremos a WhatsApp para confirmar tu espacio en Brinel Beauty.
-              </p>
-              <div class="divisor"></div>
-            </div>
-
-            <div class="form-wrapper reveal">
-
-              <div class="text-center mb-4">
-                <div style="font-size:3rem;">🌸</div>
-                <h4 style="font-family:'Great Vibes',cursive; font-size:2rem; color:var(--fucsia);">
-                  ¡Te esperamos!
-                </h4>
-              </div>
-
-              <form id="citaForm" class="needs-validation" novalidate>
-
-                <div class="mb-3">
-                  <label class="form-label" for="nombreCliente">
-                    <i class="bi bi-person-fill me-1"></i>Nombre completo
-                  </label>
-                  <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control" id="nombreCliente" name="nombre"
-                      placeholder="Ej: María García" required />
-                    <div class="invalid-feedback">Por favor ingresa tu nombre completo.</div>
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="telefonoCliente">
-                    <i class="bi bi-telephone-fill me-1"></i>Número de teléfono
-                  </label>
-                  <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-whatsapp"></i></span>
-                    <input type="tel" class="form-control" id="telefonoCliente" name="telefono"
-                      placeholder="Ej: 5555 0000" required pattern="[\d\s\+\-\(\)]{7,15}" />
-                    <div class="invalid-feedback">Por favor ingresa un número de teléfono válido.</div>
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="servicioCliente">
-                    <i class="bi bi-scissors me-1"></i>Servicio de interés
-                  </label>
-                  <select class="form-select" id="servicioCliente" name="servicio" required>
-                    <option value="" selected disabled>— Selecciona un servicio —</option>
-                    <option value="Cortes">Cortes</option>
-                    <option value="Peinados">Peinados</option>
-                    <option value="Diseño de Uñas">Diseño de Uñas</option>
-                    <option value="Maquillaje Natural">Maquillaje Natural</option>
-                    <option value="Maquillaje Social">Maquillaje Social</option>
-                    <option value="Maquillaje Express">Maquillaje Express</option>
-                    <option value="Diseño de Cejas">Diseño de Cejas</option>
-                    <option value="Micropigmentación">Micropigmentación</option>
-                    <option value="Extensión de Pestañas">Extensión de Pestañas</option>
-                    <option value="Academia">Academia</option>
-                  </select>
-                  <div class="invalid-feedback">Por favor selecciona un servicio.</div>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label" for="fechaCliente">
-                    <i class="bi bi-calendar-date me-1"></i>Fecha preferida
-                  </label>
-                  <input type="date" class="form-control" id="fechaCliente" name="fecha" required />
-                  <div class="invalid-feedback">Por favor selecciona una fecha.</div>
-                </div>
-
-                <div class="mb-4">
-                  <label class="form-label" for="mensajeCliente">
-                    <i class="bi bi-chat-dots me-1"></i>Mensaje (opcional)
-                  </label>
-                  <textarea class="form-control" id="mensajeCliente" name="mensaje" rows="3"
-                    placeholder="¿Algo especial que quieras contarnos?"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-brinel w-100 py-3" id="btnCita">
-                  <i class="bi bi-calendar-check me-2"></i>
-                  Registrar y Agendar mi Cita
-                </button>
-
-              </form>
-
-              <div id="mensajeExito" class="text-center mt-4 d-none">
-                <div style="font-size:3.5rem;">🎉</div>
-                <h4 style="color:var(--fucsia); font-family:'Great Vibes',cursive; font-size:2rem;">
-                  ¡Solicitud recibida!
-                </h4>
-                <p style="color:var(--texto-medio);">
-                  Gracias por contactarnos. Te llamaremos pronto para confirmar tu cita en
-                  <strong>Brinel Beauty Studio</strong>. 💖
-                </p>
-              </div>
-
-            </div>
-          </div>
-        </section>
-        <!-- Fin formulario -->
-
-        <!-- Mensaje de éxito (oculto hasta que se envíe el formulario) -->
-        <div id="mensajeExito" class="text-center mt-4 d-none">
-          <!-- d-none: oculto por defecto, se muestra con JS -->
-          <div style="font-size:3.5rem;">🎉</div>
-          <h4 style="color:var(--fucsia); font-family:'Great Vibes',cursive; font-size:2rem;">
-            ¡Solicitud recibida!
-          </h4>
-          <p style="color:var(--texto-medio);">
-            Gracias por contactarnos. Te llamaremos pronto para confirmar tu cita en <strong>Brinel Beauty
-              Studio</strong>. 💖
-          </p>
-        </div>
-
-      </div>
-      <!-- Fin form-wrapper -->
-
+      <!-- El JS llena esta galería con la lista FOTOS_GALERIA -->
+      <div class="galeria" id="galeria-grid"></div>
     </div>
   </section>
-  <!-- Fin SECCIÓN FORMULARIO -->
 
-  </section>
+  <!-- Visor de fotos -->
+  <div class="visor" id="visor" aria-hidden="true">
+    <button class="visor-cerrar" id="visorCerrar" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+    <button class="visor-flecha izq" id="visorPrev" aria-label="Anterior"><i class="bi bi-chevron-left"></i></button>
+    <img src="" alt="Trabajo de Brinel Beauty" id="visorImg" />
+    <button class="visor-flecha der" id="visorNext" aria-label="Siguiente"><i class="bi bi-chevron-right"></i></button>
+    <span class="visor-contador" id="visorContador"></span>
+  </div>
+
+
   <!-- ══════════════════════════════════════════════
-     FOOTER – PIE DE PÁGINA
-══════════════════════════════════════════════ -->
-  <footer class="brinel-footer">
+       6. TIENDA
+  ══════════════════════════════════════════════ -->
+  <section id="tienda" class="seccion fondo-rubor">
     <div class="container">
-      <div class="row">
+      <div class="row g-4 g-lg-5 align-items-center">
+        <div class="col-lg-5 reveal">
+          <p class="etiqueta">Brinel Shop</p>
+          <h2 class="titulo">Tienda de <em>cosméticos</em></h2>
+          <p class="parrafo">Encuentra los mejores productos de belleza para realzar tu estilo: delineadores, kits de cejas y todo lo que usamos en el estudio.</p>
+          <a href="https://www.instagram.com/brinel_shop/" target="_blank" rel="noopener" class="btn-brinel">Visitar la tienda <i class="bi bi-instagram ms-1"></i></a>
+        </div>
+        <div class="col-lg-7 reveal">
+          <div class="productos">
+            <div class="producto"><img src="images/web/producto1.png" alt="Delineador" loading="lazy" /></div>
+            <div class="producto alto"><img src="images/web/producto2.png" alt="Kit para cejas" loading="lazy" /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- Fila principal del footer -->
-        <div class="row g-4 align-items-start">
-          <!-- align-items-start: alinea columnas arriba -->
 
-          <!-- Columna 1: Logo y descripción -->
-          <div class="col-md-4 text-center text-md-start">
-            <!-- text-center en móvil, text-md-start en desktop -->
-            <div class="footer-brand">Brinel Beauty</div>
-            <!-- Logo en fuente cursiva -->
-            <div class="footer-sub mb-3">Studio & Academy</div>
-            <p style="font-size:0.85rem; line-height:1.8; color:rgba(255,240,248,0.5);">
-              Un espacio creado con amor para realzar tu belleza y formar profesionales apasionadas por el arte
-              del
-              maquillaje.
+  <!-- ══════════════════════════════════════════════
+       7. VISÍTANOS – horarios, ubicaciones y contacto
+  ══════════════════════════════════════════════ -->
+  <section id="visitanos" class="visitanos">
+    <div class="visitanos-foto" role="img" aria-label="Interior del salón" style="background-image:url('images/web/salon1.jpg');"></div>
+    <div class="container position-relative">
+      <div class="visitanos-panel reveal">
+        <p class="etiqueta">Visítanos</p>
+        <h2 class="titulo">Te esperamos en <em>Brinel</em></h2>
+
+        <div class="row g-4 mt-1">
+          <div class="col-md-4">
+            <h3 class="dato-titulo">Horario</h3>
+            <p class="dato">Martes a viernes<br>10:00 am – 6:00 pm</p>
+            <p class="dato">Sábados<br>10:00 am – 4:00 pm</p>
+            <p class="dato tenue">Lunes y domingos: cerrado</p>
+          </div>
+          <div class="col-md-4">
+            <h3 class="dato-titulo">Ubicaciones</h3>
+            <p class="dato">
+              <a href="https://www.google.com/maps/search/?api=1&query=Nueva+Santa+Rosa+Canton+Palin+Guatemala" target="_blank" rel="noopener">Nueva Santa Rosa, Cantón Palín</a>
+            </p>
+            <p class="dato">
+              <a href="https://www.google.com/maps/search/?api=1&query=1ra+Avenida+7-69+zona+1+Casillas+Santa+Rosa+Guatemala" target="_blank" rel="noopener">1ra. Av. 7-69 zona 1, Casillas, Santa Rosa</a>
             </p>
           </div>
-
-          <!-- Columna 2: Links rápidos -->
-          <div class="col-md-4 text-center">
-            <h6
-              style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:rgba(255,240,248,0.8); margin-bottom:1rem;">
-              Navegación
-            </h6>
-            <ul class="list-unstyled" style="font-size:0.85rem;">
-              <!-- list-unstyled: quita los puntos de la lista -->
-              <li class="mb-2"><a href="#inicio" style="color:rgba(255,240,248,0.5); text-decoration:none;"
-                  onmouseover="this.style.color='#f8b4d9'"
-                  onmouseout="this.style.color='rgba(255,240,248,0.5)'">Inicio</a></li>
-              <li class="mb-2"><a href="#info" style="color:rgba(255,240,248,0.5); text-decoration:none;"
-                  onmouseover="this.style.color='#f8b4d9'"
-                  onmouseout="this.style.color='rgba(255,240,248,0.5)'">Nosotros</a></li>
-              <li class="mb-2"><a href="#trabajos" style="color:rgba(255,240,248,0.5); text-decoration:none;"
-                  onmouseover="this.style.color='#f8b4d9'"
-                  onmouseout="this.style.color='rgba(255,240,248,0.5)'">Servicios</a></li>
-              <li class="mb-2"><a href="#galeria-seccion" style="color:rgba(255,240,248,0.5); text-decoration:none;"
-                  onmouseover="this.style.color='#f8b4d9'"
-                  onmouseout="this.style.color='rgba(255,240,248,0.5)'">Galeria</a></li>
-              <li class="mb-2"><a href="#cita" style="color:rgba(255,240,248,0.5); text-decoration:none;"
-                  onmouseover="this.style.color='#f8b4d9'"
-                  onmouseout="this.style.color='rgba(255,240,248,0.5)'">Reservar
-                  Cita</a></li>
-            </ul>
-          </div>
-
-          <!-- Columna 3: Redes sociales -->
-          <div class="col-md-4 text-center text-md-end">
-            <h6
-              style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:rgba(255,240,248,0.8); margin-bottom:1rem;">
-              Síguenos
-            </h6>
-            <!-- Botones de redes sociales -->
-            <div class="d-flex gap-3 justify-content-center justify-content-md-end mb-3">
-
-              <!-- WhatsApp -->
-              <a href="https://wa.me/50255126664?text=Hola%20Brinel%20Beauty,%20quiero%20información%20sobre%20un%20servicio%20o%20producto..."
-                target="_blank" rel="noopener noreferrer" class="social-btn whatsapp" title="WhatsApp">
-                <i class="bi bi-whatsapp"></i>
-              </a>
-
-              <!-- Facebook -->
-              <a href="https://www.facebook.com/profile.php?id=61559389152870" target="_blank" rel="noopener noreferrer"
-                class="social-btn facebook" title="Facebook">
-                <i class="bi bi-facebook"></i>
-              </a>
-
-              <!-- Instagram -->
-              <a href="https://www.instagram.com/brinelbeauty/" target="_blank" rel="noopener noreferrer"
-                class="social-btn instagram" title="Instagram">
-                <i class="bi bi-instagram"></i>
-              </a>
-
-              <!-- TikTok -->
-              <a href="https://www.tiktok.com/@brinelbeauty?lang=es" target="_blank" rel="noopener noreferrer"
-                class="social-btn tiktok" title="TikTok">
-                <i class="bi bi-tiktok"></i>
-              </a>
-
-            </div>
-            <!-- Fin row principal -->
-
-            <!-- Línea separadora -->
-            <hr class="footer-divider" />
-
-            <!-- Copyright -->
-            <div class="text-center">
-              <p class="footer-copy mb-0">
-                © 2026 <span style="color:rgba(248,180,214,0.7);">Brinel Beauty Studio & Academy</span>
-                · Casillas Santa Rosa, Guatemala
-                · Hecho con 💖
-                · By: Josué Cruz Sagastume
-              </p>
-            </div>
-
+          <div class="col-md-4">
+            <h3 class="dato-titulo">Contacto</h3>
+            <p class="dato"><a href="#" class="lnk-wa">WhatsApp 5512-6664</a></p>
+            <p class="dato"><a href="https://www.instagram.com/brinelbeauty/" target="_blank" rel="noopener">Instagram @brinelbeauty</a></p>
+            <p class="dato"><a href="https://www.facebook.com/profile.php?id=61559389152870" target="_blank" rel="noopener">Facebook Brinel Academia</a></p>
+            <p class="dato"><a href="https://www.tiktok.com/@brinelbeauty?lang=es" target="_blank" rel="noopener">TikTok @brinelbeauty</a></p>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       8. CITA – foto + formulario → WhatsApp
+  ══════════════════════════════════════════════ -->
+  <section id="cita" class="seccion">
+    <div class="container">
+      <div class="cita-caja reveal">
+        <div class="row g-0">
+
+          <div class="col-lg-5 cita-foto" style="background-image:url('images/web/trabajo1.jpg');">
+            <div class="cita-foto-texto">
+              <span class="caligrafia">¡Te esperamos!</span>
+              <p>Déjanos tus datos y te llevamos a WhatsApp para confirmar tu espacio.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="cita-form">
+              <p class="etiqueta">Reserva tu espacio</p>
+              <h2 class="titulo mb-4">Agenda tu <em>cita</em></h2>
+
+              <form id="citaForm" class="needs-validation" novalidate>
+                <div class="row g-3">
+                  <div class="col-sm-6">
+                    <label class="form-label" for="nombreCliente">Nombre completo</label>
+                    <input type="text" class="form-control" id="nombreCliente" placeholder="Ej: María García" required />
+                    <div class="invalid-feedback">Ingresa tu nombre.</div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label" for="telefonoCliente">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefonoCliente" placeholder="Ej: 5555 0000" required pattern="[\d\s\+\-\(\)]{8,15}" />
+                    <div class="invalid-feedback">Ingresa un número válido.</div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label" for="servicioCliente">Servicio</label>
+                    <select class="form-select" id="servicioCliente" required>
+                      <option value="" selected disabled>Selecciona un servicio</option>
+                      <optgroup label="Maquillaje">
+                        <option>Maquillaje Social</option>
+                        <option>Maquillaje Natural</option>
+                        <option>Maquillaje Express</option>
+                      </optgroup>
+                      <optgroup label="Cabello">
+                        <option>Peinado</option>
+                        <option>Corte</option>
+                      </optgroup>
+                      <optgroup label="Uñas">
+                        <option>Diseño de Uñas</option>
+                      </optgroup>
+                      <optgroup label="Cejas y pestañas">
+                        <option>Diseño de Cejas</option>
+                        <option>Micropigmentación</option>
+                        <option>Extensión de Pestañas</option>
+                      </optgroup>
+                      <optgroup label="Academia">
+                        <option>Academia (información de cursos)</option>
+                      </optgroup>
+                    </select>
+                    <div class="invalid-feedback">Selecciona un servicio.</div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label" for="fechaCliente">Fecha preferida</label>
+                    <input type="date" class="form-control" id="fechaCliente" required />
+                    <div class="invalid-feedback">Selecciona una fecha.</div>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label" for="mensajeCliente">Mensaje (opcional)</label>
+                    <textarea class="form-control" id="mensajeCliente" rows="3" placeholder="¿Algo especial que quieras contarnos?"></textarea>
+                  </div>
+                  <div class="col-12">
+                    <button type="submit" class="btn-brinel w-100" id="btnCita">Enviar por WhatsApp <i class="bi bi-whatsapp ms-1"></i></button>
+                  </div>
+                </div>
+              </form>
+
+              <div id="mensajeExito" class="d-none text-center py-4">
+                <span class="caligrafia">¡Solicitud enviada!</span>
+                <p class="parrafo">Se abrió WhatsApp con tu solicitud. Solo dale enviar y te confirmamos tu cita en Brinel Beauty Studio.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row g-4 align-items-center">
+
+        <div class="col-md-4 text-center text-md-start">
+          <img src="images/logos/logo_Brinel_sinfondo.png" alt="Brinel Beauty Studio & Academy" class="footer-logo" />
+        </div>
+
+        <div class="col-md-4 text-center">
+          <ul class="footer-links">
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#academia">Academia</a></li>
+            <li><a href="#galeria">Galería</a></li>
+            <li><a href="#cita">Reservar</a></li>
+          </ul>
+        </div>
+
+        <div class="col-md-4 text-center text-md-end">
+          <div class="redes">
+            <a href="#" class="lnk-wa" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61559389152870" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/brinelbeauty/" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.tiktok.com/@brinelbeauty?lang=es" target="_blank" rel="noopener" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-pie">
+        <p>© <span id="anio">2026</span> Brinel Beauty Studio & Academy · Casillas, Santa Rosa, Guatemala</p>
+        <p>
+          ¿Quieres una página web para tu negocio? Desarrollado por
+          <a href="#" id="lnkDev" target="_blank" rel="noopener" title="Escríbeme un correo">Josué Cruz Sagastume</a>
+          · MJ Control Systems
+        </p>
       </div>
     </div>
   </footer>
-  <!-- Fin FOOTER -->
 
+  <!-- WhatsApp flotante -->
+  <a href="#" class="wa-flotante lnk-wa" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><i class="bi bi-whatsapp"></i></a>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="Brinel_BeautyJS.js"></script>
 </body>
 
 </html>
