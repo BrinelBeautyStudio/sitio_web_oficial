@@ -156,3 +156,13 @@ body > .hoja { position: absolute; left: -10000px; top: 0; }
 @media print { .ingreso, .aviso { display: none !important; } }
 .ingreso-volver { display: inline-block; margin-top: 18px; font-size: 13.5px; color: var(--gris); text-decoration: none; }
 .ingreso-volver:hover { color: var(--rosa); }
+
+/* ───── v6: panel del PDF ───── */
+.panel-pdf { position: fixed; inset: 0; z-index: 30; background: rgba(43,34,48,.45); display: flex; align-items: flex-end; justify-content: center; padding: 16px; }
+.panel-pdf-caja { background: #fff; border-radius: 18px; padding: 20px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,.25); margin-bottom: env(safe-area-inset-bottom); }
+.panel-pdf-caja h2 { margin: 0 0 4px; color: var(--rosa); font-size: 19px; font-weight: 600; }
+.panel-pdf-caja p { margin: 0 0 16px; color: var(--gris); font-size: 13px; word-break: break-all; }
+.panel-pdf-botones { display: flex; flex-direction: column; gap: 8px; }
+.panel-pdf-botones .btn { width: 100%; }
+.btn-texto { background: transparent; color: var(--gris); }
+@media (min-width: 700px) { .panel-pdf { align-items: center; } }

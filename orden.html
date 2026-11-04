@@ -7,7 +7,7 @@
   <title>Generar orden | Brinel Beauty</title>
   <meta name="theme-color" content="#B5105F" />
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="Brinel_Orden.css?v=5" />
+  <link rel="stylesheet" href="Brinel_Orden.css?v=6" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
 </head>
@@ -131,7 +131,7 @@
     <section class="vista">
       <h2 class="vista-titulo">Vista previa</h2>
       <div class="vista-marco" id="vistaMarco"><div class="vista-escala" id="vistaEscala"></div></div>
-      <p class="ayuda">Al tocar <b>Guardar y PDF</b> elija <b>Guardar como PDF</b> (en el celular: Imprimir → Guardar como PDF).</p>
+      <p class="ayuda">Al tocar <b>Guardar y PDF</b> la orden se guarda y el PDF queda listo para descargar o compartir.</p>
     </section>
   </main>
 </div>
@@ -176,6 +176,17 @@
 </div>
 
 <div class="aviso" id="aviso" role="status" hidden></div>
-<script type="module" src="Brinel_Orden.js?v=5"></script>
+<div class="panel-pdf no-imprimir" id="panelPdf" hidden>
+  <div class="panel-pdf-caja" role="dialog" aria-labelledby="tituloPdf">
+    <h2 id="tituloPdf">PDF listo</h2>
+    <p id="avisoPdfNombre"></p>
+    <div class="panel-pdf-botones">
+      <button type="button" class="btn btn-rosa" id="btnCompartirPdf">Compartir (WhatsApp…)</button>
+      <button type="button" class="btn btn-borde" id="btnDescargarPdf">Descargar</button>
+      <button type="button" class="btn btn-texto" id="btnCerrarPdf">Cerrar</button>
+    </div>
+  </div>
+</div>
+<script type="module" src="Brinel_Orden.js?v=6"></script>
 </body>
 </html>

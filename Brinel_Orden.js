@@ -337,11 +337,97 @@ async function guardar() {
 $('#btnGuardar').addEventListener('click', guardar);
 $('#btnPdf').addEventListener('click', async () => {
   if (!(await guardar())) return;
-  const tituloAntes = document.title;
-  document.title = ('Orden_' + numeroActual + '_' + form.elements.clienta.value.trim()).replace(/[^\p{L}\p{N}_-]+/gu, '_');
-  window.print();
-  setTimeout(() => { document.title = tituloAntes; }, 1000);
+  await generarPdf();
 });
+
+// ═════════════ PDF ═════════════
+// El PDF se arma en el propio navegador (sin "Imprimir"), así funciona igual en el
+// teléfono y en la computadora. Las librerías se cargan solo la primera vez.
+const LIBS = [
+  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+];
+let libsListas = null;
+function cargarLibs() {
+  if (!libsListas) {
+    libsListas = Promise.all(LIBS.map((src) => new Promise((ok, mal) => {
+      const s = document.createElement('script');
+      s.src = src; s.async = true; s.crossOrigin = 'anonymous'; s.referrerPolicy = 'no-referrer';
+      s.onload = ok; s.onerror = () => mal(new Error('No se pudo cargar ' + src));
+      document.head.appendChild(s);
+    }))).catch((e) => { libsListas = null; throw e; });
+  }
+  return libsListas;
+}
+
+let pdfListo = null; // { blob, nombre }
+async function generarPdf() {
+  const btn = $('#btnPdf'); btn.disabled = true;
+  aviso('Preparando el PDF…');
+  try {
+    await cargarLibs();
+    actualizar();
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    // La hoja vive fuera de pantalla; se coloca un momento en la esquina para fotografiarla.
+    const antes = hoja.getAttribute('style') || '';
+    hoja.setAttribute('style', 'position:absolute;left:0;top:' + window.scrollY + 'px;z-index:-1;');
+    let lienzo;
+    try {
+      lienzo = await window.html2canvas(hoja, {
+        scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false,
+        windowWidth: 816, scrollX: 0, scrollY: -window.scrollY
+      });
+    } finally {
+      hoja.setAttribute('style', antes);
+    }
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'in', format: 'letter', orientation: 'portrait', compress: true });
+    const anchoPx = lienzo.width; const altoPaginaPx = Math.round(anchoPx * 11 / 8.5);
+    for (let y = 0, pag = 0; y < lienzo.height - 2; y += altoPaginaPx, pag++) {
+      const alto = Math.min(altoPaginaPx, lienzo.height - y);
+      const trozo = document.createElement('canvas');
+      trozo.width = anchoPx; trozo.height = alto;
+      const ctx = trozo.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, anchoPx, alto);
+      ctx.drawImage(lienzo, 0, y, anchoPx, alto, 0, 0, anchoPx, alto);
+      if (pag > 0) pdf.addPage('letter', 'portrait');
+      pdf.addImage(trozo.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 8.5, alto * 8.5 / anchoPx);
+    }
+    const nombre = ('Orden_' + (numeroActual || 'nueva') + '_' + form.elements.clienta.value.trim())
+      .replace(/[^\p{L}\p{N}_-]+/gu, '_').slice(0, 80) + '.pdf';
+    pdfListo = { blob: pdf.output('blob'), nombre };
+    mostrarPanelPdf();
+  } catch (e) {
+    console.error('[Ordenes] Error al crear el PDF', e);
+    aviso('No se pudo crear el PDF. Revise su internet e intente de nuevo.', true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// El teléfono solo deja descargar o compartir cuando la persona toca un botón,
+// por eso el PDF ya armado se entrega desde este panel.
+function mostrarPanelPdf() {
+  $('#avisoPdfNombre').textContent = pdfListo.nombre;
+  const archivo = new File([pdfListo.blob], pdfListo.nombre, { type: 'application/pdf' });
+  $('#btnCompartirPdf').hidden = !(navigator.canShare && navigator.canShare({ files: [archivo] }));
+  $('#panelPdf').hidden = false;
+  $('#aviso').hidden = true;
+}
+$('#btnDescargarPdf').addEventListener('click', () => {
+  if (!pdfListo) return;
+  const url = URL.createObjectURL(pdfListo.blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = pdfListo.nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+});
+$('#btnCompartirPdf').addEventListener('click', async () => {
+  if (!pdfListo) return;
+  try {
+    await navigator.share({ files: [new File([pdfListo.blob], pdfListo.nombre, { type: 'application/pdf' })], title: pdfListo.nombre });
+  } catch (e) { if (e && e.name !== 'AbortError') aviso('No se pudo compartir; use Descargar.', true); }
+});
+$('#btnCerrarPdf').addEventListener('click', () => { $('#panelPdf').hidden = true; });
 
 // ═════════════ HISTORIAL ═════════════
 async function cargarHistorial() {
@@ -372,7 +458,7 @@ function pintarHistorial() {
     const pdf = el('button', { type: 'button', text: 'PDF' });
     const borrar = el('button', { type: 'button', class: 'borrar', text: 'Eliminar' });
     abrir.addEventListener('click', () => abrirOrden(o));
-    pdf.addEventListener('click', () => { abrirOrden(o); setTimeout(() => $('#btnPdf').click(), 300); });
+    pdf.addEventListener('click', () => { abrirOrden(o); generarPdf(); });
     borrar.addEventListener('click', () => eliminarOrden(o));
     lista.appendChild(el('div', { class: 'hist-item' }, [
       el('div', { class: 't' }, [el('small', { text: String(o.numero || '') }), document.createTextNode(String(o.clienta || ''))]),
