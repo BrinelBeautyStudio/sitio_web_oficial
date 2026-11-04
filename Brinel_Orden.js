@@ -250,7 +250,6 @@ function actualizar() {
   $('#hBloquePersonas').hidden = n === 0;
 
   pintarVista();
-  if (!idActual) guardarLocal(K_BORRADOR, JSON.stringify(d));
 }
 
 function pintarVista() {
@@ -281,15 +280,13 @@ function cargarEnFormulario(d) {
       servicio: String(l.servicio || ''), para: String(l.para || ''), cantidad: entero(l.cantidad) || 1, precio: num(l.precio) || '', foco: false
     }));
   }
-  if (!lineas.children.length) agregarLinea({ servicio: 'Maquillaje y peinado' });
   actualizar();
 }
 
 function nuevaOrden() {
   idActual = null; numeroActual = ''; fechaEmision = null;
-  let borrador = null;
-  try { borrador = JSON.parse(leer(K_BORRADOR) || 'null'); } catch (e) { borrador = null; }
-  cargarEnFormulario(borrador && typeof borrador === 'object' ? borrador : null);
+  borrarLocal(K_BORRADOR); // borradores de versiones anteriores
+  cargarEnFormulario(null);
   mostrar('orden');
 }
 
@@ -329,8 +326,9 @@ async function guardar() {
     ordenes = []; // forzar recarga del historial
     return true;
   } catch (e) {
-    console.error(e);
-    aviso(e && e.code === 'permission-denied' ? 'Su cuenta no tiene permiso para guardar.' : 'No se pudo guardar. Revise su internet e intente de nuevo.', true);
+    console.error('[Ordenes] Error al guardar', e);
+    const codigo = (e && e.code) || (e && e.message) || 'desconocido';
+    aviso(codigo === 'permission-denied' ? 'Sin permiso para guardar (permission-denied).' : 'No se pudo guardar: ' + codigo, true);
     return false;
   } finally {
     botones.forEach((b) => { b.disabled = false; });
