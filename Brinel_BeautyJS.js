@@ -9,7 +9,7 @@ const CORREO_DEV = 'mjcontrolsystems@gmail.com'; // correo del desarrollador (fo
 // ── FOTOS DE LA GALERÍA (en el orden en que se muestran) ──
 const FOTOS_GALERIA = [
     'trabajo5', 'trabajo12', 'trabajo10', 'maquillaje3', 'trabajo6', 'trabajo2',
-    'peinado1', 'trabajo7', 'trabajo4', 'trabajo1', 'planchado1', 'trabajo9',
+    'peinado1', 'trabajo7', 'trabajo4', 'trabajo1', 'planchado1',
     'trabajo11', 'maquillaje5', 'trabajo8', 'trabajo3', 'pestanas1', 'maq_natural'
 ].map(n => `images/web/${n}.jpg`);
 
