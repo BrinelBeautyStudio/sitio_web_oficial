@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Generar orden | Brinel Beauty</title>
+  <meta name="theme-color" content="#B5105F" />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="Brinel_Orden.css?v=1" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
+</head>
+<body>
+
+<!-- ═══════════ PANTALLA: FORMULARIO + VISTA PREVIA (no se imprime) ═══════════ -->
+<div class="app no-imprimir">
+  <header class="barra">
+    <img src="images/logos/logo_brinel_circular.png" alt="" class="barra-logo" />
+    <div>
+      <h1>Órdenes</h1>
+      <p>Brinel Beauty Studio &amp; Academy</p>
+    </div>
+    <button type="button" class="btn btn-claro" id="btnNueva">Nueva orden</button>
+  </header>
+
+  <main class="contenido">
+    <form id="formOrden" class="formulario" autocomplete="off" novalidate>
+
+      <section class="bloque">
+        <h2>1. Clienta y evento</h2>
+        <div class="rejilla">
+          <label class="campo ancho">Nombre de la clienta
+            <input name="clienta" maxlength="80" required placeholder="Nombre completo" />
+          </label>
+          <label class="campo">Teléfono / WhatsApp
+            <input name="telefono" maxlength="20" inputmode="tel" placeholder="0000-0000" />
+          </label>
+          <label class="campo">No. de orden
+            <input name="numero" maxlength="12" />
+          </label>
+          <label class="campo">Evento
+            <input name="evento" maxlength="40" list="listaEventos" placeholder="Boda, XV años…" />
+            <datalist id="listaEventos">
+              <option value="Boda"></option><option value="XV años"></option><option value="Graduación"></option>
+              <option value="Bautizo"></option><option value="Primera comunión"></option><option value="Sesión de fotos"></option>
+              <option value="Cita en salón"></option>
+            </datalist>
+          </label>
+          <label class="campo">Lugar
+            <input name="lugar" maxlength="60" placeholder="Salón, dirección o municipio" />
+          </label>
+          <label class="campo">Fecha
+            <input name="fecha" type="date" />
+          </label>
+          <label class="campo">Hora (desde)
+            <input name="hora" type="time" />
+          </label>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2>2. ¿Qué se hará?</h2>
+        <p class="ayuda">Toque un servicio para agregarlo. Puede agregar el mismo varias veces con distinto precio (ej. novia y acompañantes).</p>
+        <div class="chips" id="chips"></div>
+        <div id="lineas" class="lineas"></div>
+        <p class="vacio" id="sinLineas">Todavía no hay servicios en la orden.</p>
+      </section>
+
+      <section class="bloque">
+        <h2>3. Pagos y notas</h2>
+        <div class="rejilla">
+          <label class="campo">Monto por servicio a domicilio (opcional)
+            <input name="traslado" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Q 0.00" />
+          </label>
+          <label class="campo">Anticipo (opcional)
+            <input name="anticipo" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Q 0.00" />
+          </label>
+          <label class="campo ancho">Nombres de las personas (opcional, uno por línea)
+            <textarea name="nombres" rows="3" maxlength="2000" placeholder="Si los deja vacíos salen líneas para escribirlos"></textarea>
+          </label>
+          <label class="check ancho">
+            <input type="checkbox" name="clientaPrimera" checked />
+            La clienta también recibe el servicio (su nombre va primero en la lista)
+          </label>
+          <label class="campo ancho">Nota al pie
+            <textarea name="nota" rows="2" maxlength="300"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <div class="total-flotante">
+        <div><small>Total</small><b id="totalPantalla">Q 0.00</b></div>
+        <button type="button" class="btn btn-rosa" id="btnPdf">Descargar PDF</button>
+      </div>
+    </form>
+
+    <section class="vista">
+      <h2 class="vista-titulo">Vista previa</h2>
+      <div class="vista-marco" id="vistaMarco"><div class="vista-escala" id="vistaEscala"></div></div>
+      <p class="ayuda">Al tocar <b>Descargar PDF</b> elija <b>Guardar como PDF</b> (en el celular: Imprimir → Guardar como PDF).</p>
+    </section>
+  </main>
+</div>
+
+<!-- ═══════════ LA HOJA (es lo único que sale en el PDF) ═══════════ -->
+<div class="hoja" id="hoja">
+  <div class="cab">
+    <img src="images/logos/logo_brinel_circular.png" alt="Brinel Beauty Studio &amp; Academy" />
+    <div><h1>Hoja de orden</h1><p>Brinel Beauty Studio &amp; Academy</p></div>
+    <div class="num"><span>Orden</span><b data-h="numero"></b><span data-h="emitida"></span></div>
+  </div>
+  <div class="cuerpo">
+    <div class="datos">
+      <div><small>Clienta</small><span data-h="clienta"></span></div>
+      <div><small>Teléfono / WhatsApp</small><span data-h="telefono"></span></div>
+      <div><small>Evento</small><span data-h="evento"></span></div>
+      <div><small>Servicio</small><span data-h="servicios"></span></div>
+      <div><small>Fecha y hora del evento</small><span data-h="cuando"></span></div>
+      <div><small>Lugar</small><span data-h="lugar"></span></div>
+    </div>
+
+    <div>
+      <h2>Detalle de la orden</h2>
+      <table>
+        <thead><tr><th>Servicio</th><th>Para</th><th class="n">Personas</th><th class="n">Precio c/u</th><th class="n">Subtotal</th></tr></thead>
+        <tbody id="hDetalle"></tbody>
+      </table>
+      <div class="tot" id="hTotales"></div>
+    </div>
+
+    <div id="hBloquePersonas">
+      <h2>Personas a atender</h2>
+      <table class="lista">
+        <thead><tr><th>#</th><th>Nombre</th><th>Servicio</th></tr></thead>
+        <tbody id="hPersonas"></tbody>
+      </table>
+    </div>
+
+    <div class="nota" id="hNota"><b>Importante:</b> <span data-h="nota"></span></div>
+  </div>
+  <div class="pie">Brinel Beauty Studio &amp; Academy · WhatsApp 5512-6664 · Gracias por su preferencia</div>
+</div>
+
+<script src="Brinel_Orden.js?v=1"></script>
+</body>
+</html>

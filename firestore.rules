@@ -1,0 +1,50 @@
+rules_version = '2';
+
+// Reglas de seguridad de Firestore · Brinel Beauty (órdenes)
+// Se pegan en Firebase → Firestore Database → Reglas → Publicar.
+// Solo los correos de la lista pueden leer o escribir. Todo lo demás está cerrado.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autorizado() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() in ['marjoriebrinella@gmail.com', 'mjcontrolsystems@gmail.com'];
+    }
+
+    function ordenValida(d) {
+      return d.clienta is string && d.clienta.size() > 0 && d.clienta.size() <= 80
+        && d.telefono is string && d.telefono.size() <= 20
+        && d.evento is string && d.evento.size() <= 40
+        && d.lugar is string && d.lugar.size() <= 60
+        && d.fecha is string && d.fecha.size() <= 10
+        && d.hora is string && d.hora.size() <= 5
+        && d.lineas is list && d.lineas.size() > 0 && d.lineas.size() <= 50
+        && d.nombres is list && d.nombres.size() <= 200
+        && d.nota is string && d.nota.size() <= 300
+        && d.total is number && d.domicilio is number && d.anticipo is number
+        && d.clientaPrimera is bool
+        && d.numero is string && d.numero.matches('^BR-[0-9]{4,6}$');
+    }
+
+    match /ordenes/{id} {
+      allow read, delete: if autorizado();
+      allow create: if autorizado() && ordenValida(request.resource.data);
+      // Al editar no se puede cambiar el número ni la fecha de creación.
+      allow update: if autorizado() && ordenValida(request.resource.data)
+        && request.resource.data.numero == resource.data.numero
+        && request.resource.data.creada == resource.data.creada;
+    }
+
+    match /contadores/ordenes {
+      allow read: if autorizado();
+      allow write: if autorizado()
+        && request.resource.data.keys().hasOnly(['siguiente'])
+        && request.resource.data.siguiente is int;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
