@@ -4,7 +4,7 @@
      este archivo es solo para mostrar un mensaje claro.
    - Los datos de la clienta solo se escriben en pantalla con textContent (nunca innerHTML). */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged }
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence }
   from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, runTransaction, getDocs, query, orderBy, limit, serverTimestamp }
   from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
@@ -34,6 +34,10 @@ const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', '
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+// La sesión dura solo mientras la pestaña esté abierta: al volver a entrar pide Google otra vez.
+const MARCA_SESION = 'brinel-sesion-activa';
+const MINUTOS_INACTIVIDAD = 30;
+await setPersistence(auth, browserSessionPersistence).catch(() => {});
 const db = getFirestore(app);
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -78,6 +82,7 @@ proveedor.setCustomParameters({ prompt: 'select_account' });
 
 $('#btnEntrar').addEventListener('click', async () => {
   $('#msgIngreso').textContent = ''; $('#msgIngreso').className = 'ingreso-msg';
+  try { sessionStorage.setItem(MARCA_SESION, '1'); } catch (e) { /* nada */ }
   try {
     await signInWithPopup(auth, proveedor);
   } catch (e) {
@@ -88,11 +93,27 @@ $('#btnEntrar').addEventListener('click', async () => {
     }
   }
 });
-$('#btnSalir').addEventListener('click', () => signOut(auth));
+$('#btnSalir').addEventListener('click', salir);
+function salir() {
+  try { sessionStorage.removeItem(MARCA_SESION); } catch (e) { /* nada */ }
+  return signOut(auth);
+}
+// Cierre automático tras un rato sin usarla (por si deja el teléfono abierto).
+let ultimoUso = Date.now();
+['pointerdown', 'keydown', 'scroll'].forEach((ev) => window.addEventListener(ev, () => { ultimoUso = Date.now(); }, { passive: true }));
+setInterval(() => {
+  if (auth.currentUser && Date.now() - ultimoUso > MINUTOS_INACTIVIDAD * 60000) {
+    salir(); mensajeIngreso('Se cerró la sesión por inactividad.');
+  }
+}, 60000);
 function mensajeIngreso(t, mal) { const m = $('#msgIngreso'); m.textContent = t; m.className = 'ingreso-msg' + (mal ? ' mal' : ''); }
 
 onAuthStateChanged(auth, async (u) => {
   $('#btnEntrar').disabled = false;
+  // Sesiones guardadas de antes (o de otra pestaña): se cierran y se pide Google de nuevo.
+  let marcada = false;
+  try { marcada = sessionStorage.getItem(MARCA_SESION) === '1'; } catch (e) { marcada = false; }
+  if (u && !marcada) { await signOut(auth); return; }
   const correo = (u && u.email || '').toLowerCase();
   if (u && u.emailVerified && AUTORIZADOS.includes(correo)) {
     $('#pantallaIngreso').hidden = true; $('#pantallaApp').hidden = false;
