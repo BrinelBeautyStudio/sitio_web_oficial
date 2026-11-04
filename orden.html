@@ -7,24 +7,53 @@
   <title>Generar orden | Brinel Beauty</title>
   <meta name="theme-color" content="#B5105F" />
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="Brinel_Orden.css?v=1" />
+  <link rel="stylesheet" href="Brinel_Orden.css?v=2" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
 </head>
 <body>
 
+<!-- ═══════════ INGRESO ═══════════ -->
+<div class="ingreso no-imprimir" id="pantallaIngreso">
+  <div class="ingreso-caja">
+    <img src="images/logos/logo_brinel_circular.png" alt="Brinel Beauty Studio &amp; Academy" />
+    <h1>Órdenes</h1>
+    <p>Brinel Beauty Studio &amp; Academy</p>
+    <button type="button" class="btn btn-google" id="btnEntrar" disabled>
+      <span class="g">G</span> Entrar con Google
+    </button>
+    <p class="ingreso-msg" id="msgIngreso">Cargando…</p>
+  </div>
+</div>
+
 <!-- ═══════════ PANTALLA: FORMULARIO + VISTA PREVIA (no se imprime) ═══════════ -->
-<div class="app no-imprimir">
+<div class="app no-imprimir" id="pantallaApp" hidden>
   <header class="barra">
     <img src="images/logos/logo_brinel_circular.png" alt="" class="barra-logo" />
     <div>
       <h1>Órdenes</h1>
       <p>Brinel Beauty Studio &amp; Academy</p>
     </div>
-    <button type="button" class="btn btn-claro" id="btnNueva">Nueva orden</button>
+    <div class="barra-acciones">
+      <span class="usuario" id="usuarioCorreo"></span>
+      <button type="button" class="btn btn-claro" id="btnSalir">Salir</button>
+    </div>
   </header>
+  <nav class="pestanas">
+    <button type="button" class="pestana activa" data-vista="orden" id="tabOrden">Nueva orden</button>
+    <button type="button" class="pestana" data-vista="historial" id="tabHistorial">Historial</button>
+  </nav>
 
-  <main class="contenido">
+  <section class="historial" id="vistaHistorial" hidden>
+    <div class="hist-barra">
+      <input type="search" id="buscar" placeholder="Buscar por clienta, número o evento" maxlength="60" />
+      <button type="button" class="btn btn-rosa" id="btnNueva">+ Nueva orden</button>
+    </div>
+    <p class="vacio" id="histEstado">Cargando órdenes…</p>
+    <div class="hist-lista" id="histLista"></div>
+  </section>
+
+  <main class="contenido" id="vistaOrden">
     <form id="formOrden" class="formulario" autocomplete="off" novalidate>
 
       <section class="bloque">
@@ -37,7 +66,7 @@
             <input name="telefono" maxlength="20" inputmode="tel" placeholder="0000-0000" />
           </label>
           <label class="campo">No. de orden
-            <input name="numero" maxlength="12" />
+            <input name="numero" readonly tabindex="-1" placeholder="Se asigna al guardar" />
           </label>
           <label class="campo">Evento
             <input name="evento" maxlength="40" list="listaEventos" placeholder="Boda, XV años…" />
@@ -91,14 +120,17 @@
 
       <div class="total-flotante">
         <div><small>Total</small><b id="totalPantalla">Q 0.00</b></div>
-        <button type="button" class="btn btn-rosa" id="btnPdf">Descargar PDF</button>
+        <div class="acciones">
+          <button type="button" class="btn btn-borde" id="btnGuardar">Guardar</button>
+          <button type="button" class="btn btn-rosa" id="btnPdf">Guardar y PDF</button>
+        </div>
       </div>
     </form>
 
     <section class="vista">
       <h2 class="vista-titulo">Vista previa</h2>
       <div class="vista-marco" id="vistaMarco"><div class="vista-escala" id="vistaEscala"></div></div>
-      <p class="ayuda">Al tocar <b>Descargar PDF</b> elija <b>Guardar como PDF</b> (en el celular: Imprimir → Guardar como PDF).</p>
+      <p class="ayuda">Al tocar <b>Guardar y PDF</b> elija <b>Guardar como PDF</b> (en el celular: Imprimir → Guardar como PDF).</p>
     </section>
   </main>
 </div>
@@ -142,6 +174,7 @@
   <div class="pie">Brinel Beauty Studio &amp; Academy · WhatsApp 5512-6664 · Gracias por su preferencia</div>
 </div>
 
-<script src="Brinel_Orden.js?v=1"></script>
+<div class="aviso" id="aviso" role="status" hidden></div>
+<script type="module" src="Brinel_Orden.js?v=2"></script>
 </body>
 </html>
