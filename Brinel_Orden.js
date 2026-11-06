@@ -134,15 +134,19 @@ onAuthStateChanged(auth, async (u) => {
 function mostrar(vista) {
   $('#vistaOrden').hidden = vista !== 'orden';
   $('#vistaHistorial').hidden = vista !== 'historial';
+  $('#vistaCalendario').hidden = vista !== 'calendario';
   $('#tabOrden').classList.toggle('activa', vista === 'orden');
   $('#tabHistorial').classList.toggle('activa', vista === 'historial');
+  $('#tabCalendario').classList.toggle('activa', vista === 'calendario');
   $('#tabOrden').textContent = idActual ? 'Orden ' + numeroActual : 'Nueva orden';
   if (vista === 'historial') cargarHistorial();
+  if (vista === 'calendario') cargarOrdenes().then(pintarCalendario);
   if (vista === 'orden') pintarVista();
   window.scrollTo(0, 0);
 }
 $('#tabOrden').addEventListener('click', () => mostrar('orden'));
 $('#tabHistorial').addEventListener('click', () => mostrar('historial'));
+$('#tabCalendario').addEventListener('click', () => mostrar('calendario'));
 
 // ═════════════ FORMULARIO ═════════════
 SERVICIOS.concat([OTRO]).forEach((s) => {
@@ -209,6 +213,7 @@ function poner(clave, texto, pendiente) {
 }
 
 function actualizar() {
+  avisarChoques();
   const f = form.elements;
   const ls = leerLineas();
   const d = datosOrden();
@@ -345,6 +350,7 @@ async function guardar() {
     $('#tabOrden').textContent = 'Orden ' + numeroActual;
     aviso('Orden ' + numeroActual + ' guardada.');
     ordenes = []; // forzar recarga del historial
+    cargarOrdenes().catch(() => {});
     return true;
   } catch (e) {
     console.error('[Ordenes] Error al guardar', e);
@@ -483,16 +489,22 @@ $('#btnAbrirChrome').addEventListener('click', () => {
 $('#btnCerrarPdf').addEventListener('click', () => { $('#panelPdf').hidden = true; });
 
 // ═════════════ HISTORIAL ═════════════
+// Carga las órdenes una vez y las comparten Historial, Calendario y el aviso de choques.
+let cargando = null;
+function cargarOrdenes() {
+  if (ordenes.length) return Promise.resolve(ordenes);
+  if (!cargando) {
+    cargando = getDocs(query(collection(db, 'ordenes'), orderBy('creada', 'desc'), limit(500)))
+      .then((r) => { ordenes = r.docs.map((x) => Object.assign({ id: x.id }, x.data())); return ordenes; })
+      .finally(() => { cargando = null; });
+  }
+  return cargando;
+}
 async function cargarHistorial() {
   const estado = $('#histEstado');
-  if (!ordenes.length) {
-    estado.hidden = false; estado.textContent = 'Cargando órdenes…'; $('#histLista').textContent = '';
-    try {
-      const r = await getDocs(query(collection(db, 'ordenes'), orderBy('creada', 'desc'), limit(300)));
-      ordenes = r.docs.map((x) => Object.assign({ id: x.id }, x.data()));
-    } catch (e) {
-      console.error(e); estado.textContent = 'No se pudo cargar el historial. Revise su internet.'; return;
-    }
+  if (!ordenes.length) { estado.hidden = false; estado.textContent = 'Cargando órdenes…'; $('#histLista').textContent = ''; }
+  try { await cargarOrdenes(); } catch (e) {
+    console.error(e); estado.textContent = 'No se pudo cargar el historial. Revise su internet.'; return;
   }
   pintarHistorial();
 }
@@ -591,7 +603,7 @@ function pintarHistorial() {
       el('div', { class: 'm', text: dinero(Number(o.total) || 0) }),
       el('div', { class: 'd', text: (evento || 'Sin datos del evento') + (creada ? ' · creada ' + creada : '') + anticipo }),
       el('div', { class: 'marcas' }, [casilla('atendida', 'Atendida'), casilla('pagada', 'Pagada')]),
-      el('div', { class: 'b' }, [abrir, pdf, borrar])
+      el('div', { class: 'b' }, [abrir, pdf, botonWhatsApp(o), borrar])
     ]));
   });
 }
@@ -621,11 +633,123 @@ async function eliminarOrden(o) {
   } catch (e) { console.error(e); aviso('No se pudo eliminar.', true); }
 }
 
+// ═════════════ RECORDATORIO POR WHATSAPP ═════════════
+const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const UBICACION = 'Barrio El Estadio, Nueva Santa Rosa (esquina, mano izquierda, antes de llegar al Estadio Municipal)';
+const isoDe = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const desdeIso = (iso) => { const [a, m, d] = iso.split('-').map(Number); return new Date(a, m - 1, d); };
+
+function telefonoWhatsApp(t) {
+  let n = String(t || '').replace(/\D/g, '');
+  if (n.length === 8) n = '502' + n;           // número de Guatemala sin código de país
+  return n.length >= 10 ? n : '';
+}
+function cuandoTexto(iso) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || '')) return '';
+  const d = desdeIso(iso); const hoy = new Date(); const man = new Date(); man.setDate(hoy.getDate() + 1);
+  const largo = DIAS[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()];
+  if (iso === isoDe(hoy)) return 'hoy, ' + largo;
+  if (iso === isoDe(man)) return 'mañana, ' + largo;
+  return 'el ' + largo;
+}
+function mensajeWhatsApp(o) {
+  const nombre = String(o.clienta || '').trim().split(/\s+/)[0] || '';
+  const ls = Array.isArray(o.lineas) ? o.lineas : [];
+  const servicios = unir([...new Set(ls.map((l) => l.servicio).filter(Boolean))]);
+  const personas = ls.reduce((a, l) => a + (Number(l.cantidad) || 0), 0);
+  const saldo = o.pagada ? 0 : Math.max((Number(o.total) || 0) - (Number(o.anticipo) || 0), 0);
+  const cuando = cuandoTexto(o.fecha); const hora = horaTexto(o.hora);
+  return [
+    'Hola ' + nombre + ' 💖',
+    'Te saludamos de *Brinel Beauty Studio & Academy*.',
+    '',
+    ('Te recordamos tu cita' + (cuando ? ' ' + cuando : '') + (hora ? ' a las ' + hora.replace(/\u00a0/g, ' ') : '') + '.').replace(/\.\.$/, '.'),
+    servicios ? '✨ Servicio: ' + servicios + (personas > 1 ? ' (' + personas + ' personas)' : '') : '',
+    '📍 Lugar: ' + (o.lugar || UBICACION),
+    saldo ? '💳 Saldo pendiente: ' + dinero(saldo) : '',
+    '',
+    '¡Te esperamos! Si necesitas cambiar algo, respóndenos por aquí.'
+  ].filter((x, i, a) => x !== '' || (a[i - 1] !== '' && i > 0)).join('\n');
+}
+function botonWhatsApp(o) {
+  const tel = telefonoWhatsApp(o.telefono);
+  const a = el('a', { class: 'btn-wa' + (tel ? '' : ' sin'), target: '_blank', rel: 'noopener', text: 'WhatsApp' });
+  if (tel) a.href = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(mensajeWhatsApp(o));
+  else { a.setAttribute('aria-disabled', 'true'); a.title = 'La orden no tiene teléfono'; a.addEventListener('click', () => aviso('Esta orden no tiene teléfono.', true)); }
+  return a;
+}
+
+// ═════════════ AVISO DE CHOQUES DE HORARIO ═════════════
+function avisarChoques() {
+  const caja = $('#avisoChoque'); const f = form.elements;
+  const fecha = f.fecha.value;
+  const mismas = fecha ? ordenes.filter((o) => o.fecha === fecha && o.id !== idActual) : [];
+  if (!mismas.length) { caja.hidden = true; return; }
+  mismas.sort((a, b) => String(a.hora || '99').localeCompare(String(b.hora || '99')));
+  const misma = f.hora.value && mismas.some((o) => o.hora === f.hora.value);
+  caja.className = 'ancho choque' + (misma ? ' fuerte' : '');
+  caja.textContent = (misma ? '⚠ Ya hay una cita a esa misma hora. ' : 'Ese día ya tiene ' + mismas.length + (mismas.length === 1 ? ' cita: ' : ' citas: ')) +
+    mismas.map((o) => (o.hora ? horaTexto(o.hora).replace(/ /g, ' ') : 'sin hora') + ' ' + (o.clienta || '') + ' (' + (o.numero || '') + ')').join(' · ');
+  caja.hidden = false;
+}
+
+// ═════════════ CALENDARIO ═════════════
+let calMes = new Date(); calMes.setDate(1);
+let calSel = isoDe(new Date());
+function pintarCalendario() {
+  $('#calTitulo').textContent = MESES[calMes.getMonth()] + ' ' + calMes.getFullYear();
+  const porDia = {};
+  ordenes.forEach((o) => { if (/^\d{4}-\d{2}-\d{2}$/.test(o.fecha || '')) (porDia[o.fecha] = porDia[o.fecha] || []).push(o); });
+  Object.values(porDia).forEach((l) => l.sort((a, b) => String(a.hora || '99').localeCompare(String(b.hora || '99'))));
+  const grid = $('#calGrid'); grid.textContent = '';
+  const inicio = new Date(calMes); inicio.setDate(1 - ((calMes.getDay() + 6) % 7)); // lunes de la primera semana
+  const hoy = isoDe(new Date());
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(inicio); d.setDate(inicio.getDate() + i);
+    if (i === 35 && d.getMonth() !== calMes.getMonth()) break; // no mostrar una 6.ª semana vacía
+    const iso = isoDe(d); const citas = porDia[iso] || [];
+    const celda = el('button', { type: 'button', class: 'cal-celda' + (d.getMonth() !== calMes.getMonth() ? ' fuera' : '') + (iso === hoy ? ' hoy' : '') + (iso === calSel ? ' sel' : '') + (citas.length ? ' con' : '') });
+    celda.appendChild(el('span', { class: 'cal-num', text: String(d.getDate()) }));
+    if (citas.length) {
+      celda.appendChild(el('span', { class: 'cal-cuenta', text: String(citas.length) }));
+      citas.slice(0, 2).forEach((o) => celda.appendChild(el('span', { class: 'cal-evento' + (o.pagada && o.atendida ? ' listo' : ''), text: (o.hora || '') + ' ' + String(o.clienta || '').split(' ')[0] })));
+      if (citas.length > 2) celda.appendChild(el('span', { class: 'cal-mas', text: '+' + (citas.length - 2) + ' más' }));
+    }
+    celda.addEventListener('click', () => { calSel = iso; pintarCalendario(); $('#calDiaTitulo').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); });
+    grid.appendChild(celda);
+  }
+  pintarDia(porDia[calSel] || []);
+}
+function pintarDia(citas) {
+  const d = desdeIso(calSel);
+  $('#calDiaTitulo').textContent = DIAS[d.getDay()][0].toUpperCase() + DIAS[d.getDay()].slice(1) + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] + ' · ' + (citas.length ? citas.length + (citas.length === 1 ? ' cita' : ' citas') : 'sin citas');
+  const lista = $('#calDiaLista'); lista.textContent = '';
+  citas.forEach((o) => {
+    const abrir = el('button', { type: 'button', text: 'Abrir' }); abrir.addEventListener('click', () => abrirOrden(o));
+    const estado = o.pagada ? 'Pagada' : 'Saldo ' + dinero(Math.max((Number(o.total) || 0) - (Number(o.anticipo) || 0), 0));
+    lista.appendChild(el('div', { class: 'hist-item' + (o.pagada && o.atendida ? ' lista' : '') }, [
+      el('div', { class: 't' }, [el('small', { text: o.hora ? horaTexto(o.hora) : 'Sin hora' }), document.createTextNode(String(o.clienta || ''))]),
+      el('div', { class: 'm', text: dinero(Number(o.total) || 0) }),
+      el('div', { class: 'd', text: [o.numero, o.evento, o.lugar, estado].filter(Boolean).join(' · ') }),
+      el('div', { class: 'b' }, [abrir, botonWhatsApp(o)])
+    ]));
+  });
+  if (!citas.length) {
+    const nueva = el('button', { type: 'button', class: 'btn btn-borde', text: '+ Nueva orden para este día' });
+    nueva.addEventListener('click', () => { nuevaOrden(); form.elements.fecha.value = calSel; actualizar(); });
+    lista.appendChild(el('div', { class: 'cal-vacio' }, [nueva]));
+  }
+}
+$('#calAnterior').addEventListener('click', () => { calMes.setMonth(calMes.getMonth() - 1); pintarCalendario(); });
+$('#calSiguiente').addEventListener('click', () => { calMes.setMonth(calMes.getMonth() + 1); pintarCalendario(); });
+$('#calHoy').addEventListener('click', () => { calMes = new Date(); calMes.setDate(1); calSel = isoDe(new Date()); pintarCalendario(); });
+
 // ═════════════ INICIO ═════════════
 let iniciada = false;
 function iniciarApp() {
   if (iniciada) return;
   iniciada = true;
   nuevaOrden();
+  cargarOrdenes().then(actualizar).catch(() => {}); // para el aviso de choques
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(pintarVista);
 }

@@ -7,7 +7,7 @@
   <title>Generar orden | Brinel Beauty</title>
   <meta name="theme-color" content="#B5105F" />
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="Brinel_Orden.css?v=10" />
+  <link rel="stylesheet" href="Brinel_Orden.css?v=11" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
 </head>
@@ -42,8 +42,24 @@
   </header>
   <nav class="pestanas">
     <button type="button" class="pestana activa" data-vista="orden" id="tabOrden">Nueva orden</button>
+    <button type="button" class="pestana" data-vista="calendario" id="tabCalendario">Calendario</button>
     <button type="button" class="pestana" data-vista="historial" id="tabHistorial">Historial</button>
   </nav>
+
+  <section class="calendario" id="vistaCalendario" hidden>
+    <div class="cal-barra">
+      <button type="button" class="pag" id="calAnterior" aria-label="Mes anterior">‹</button>
+      <h2 id="calTitulo"></h2>
+      <button type="button" class="pag" id="calSiguiente" aria-label="Mes siguiente">›</button>
+      <button type="button" class="filtro" id="calHoy">Hoy</button>
+    </div>
+    <div class="cal-semana"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-dia">
+      <h3 id="calDiaTitulo"></h3>
+      <div id="calDiaLista" class="hist-lista"></div>
+    </div>
+  </section>
 
   <section class="historial" id="vistaHistorial" hidden>
     <div class="hist-barra">
@@ -135,6 +151,7 @@
           <label class="campo">Hora (desde)
             <input name="hora" type="time" />
           </label>
+          <p class="ancho choque" id="avisoChoque" hidden></p>
         </div>
       </section>
 
@@ -242,6 +259,6 @@
     <p class="panel-pdf-nota">Instagram no acepta archivos PDF: para Instagram use «imagen».</p>
   </div>
 </div>
-<script type="module" src="Brinel_Orden.js?v=10"></script>
+<script type="module" src="Brinel_Orden.js?v=11"></script>
 </body>
 </html>
