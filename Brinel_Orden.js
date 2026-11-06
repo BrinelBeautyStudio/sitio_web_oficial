@@ -497,10 +497,65 @@ async function cargarHistorial() {
   pintarHistorial();
 }
 
+// Fecha que cuenta para la caja: la del evento; si no tiene, la de creación.
+function fechaDe(o) {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(o.fecha || '')) { const [a, m, d] = o.fecha.split('-').map(Number); return new Date(a, m - 1, d); }
+  return o.creada && o.creada.toDate ? o.creada.toDate() : null;
+}
+function enPeriodo(o, periodo) {
+  if (periodo === 'todo') return true;
+  const f = fechaDe(o); if (!f) return false;
+  const hoy = new Date();
+  if (periodo === 'anio') return f.getFullYear() === hoy.getFullYear();
+  const ref = periodo === 'anterior' ? new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1) : hoy;
+  return f.getFullYear() === ref.getFullYear() && f.getMonth() === ref.getMonth();
+}
+const cobradoDe = (o) => o.pagada ? (Number(o.total) || 0) : Math.min(Number(o.anticipo) || 0, Number(o.total) || 0);
+let filtroEstado = 'todas';
+
+function pintarCaja() {
+  const periodo = $('#periodo').value;
+  const lista = ordenes.filter((o) => enPeriodo(o, periodo));
+  const total = lista.reduce((a, o) => a + (Number(o.total) || 0), 0);
+  const cobrado = lista.reduce((a, o) => a + cobradoDe(o), 0);
+  $('#cajaCobrado').textContent = dinero(cobrado);
+  $('#cajaPorCobrar').textContent = dinero(Math.max(total - cobrado, 0));
+  $('#cajaTotal').textContent = dinero(total);
+  $('#cajaBarra').style.width = (total ? Math.round(cobrado / total * 100) : 0) + '%';
+  $('#cajaOrdenes').textContent = lista.length;
+  $('#cajaAtendidas').textContent = lista.filter((o) => o.atendida).length;
+  $('#cajaPagadas').textContent = lista.filter((o) => o.pagada).length;
+}
+$('#periodo').addEventListener('change', pintarCaja);
+document.querySelectorAll('#histFiltros .filtro').forEach((b) => b.addEventListener('click', () => {
+  filtroEstado = b.dataset.f;
+  document.querySelectorAll('#histFiltros .filtro').forEach((x) => x.classList.toggle('activo', x === b));
+  pintarHistorial();
+}));
+
+// Marca "atendida" o "pagada" y la guarda al momento.
+async function marcar(o, campo, valor, casilla) {
+  casilla.disabled = true;
+  try {
+    await updateDoc(doc(db, 'ordenes', o.id), { [campo]: valor, actualizada: serverTimestamp() });
+    o[campo] = valor;
+    aviso((campo === 'pagada' ? (valor ? 'Marcada como pagada' : 'Marcada como no pagada') : (valor ? 'Marcada como atendida' : 'Marcada como no atendida')) + ' · ' + o.numero);
+  } catch (e) {
+    console.error('[Ordenes] Error al marcar', e);
+    casilla.checked = !valor;
+    aviso('No se pudo guardar el cambio: ' + ((e && e.code) || 'error'), true);
+  } finally {
+    casilla.disabled = false;
+    pintarHistorial();
+  }
+}
+
 function pintarHistorial() {
+  pintarCaja();
   const filtro = $('#buscar').value.trim().toLowerCase();
   const lista = $('#histLista'); lista.textContent = '';
-  const vis = ordenes.filter((o) => !filtro || [o.numero, o.clienta, o.evento, o.lugar, o.telefono].some((v) => String(v || '').toLowerCase().includes(filtro)));
+  const vis = ordenes.filter((o) => !filtro || [o.numero, o.clienta, o.evento, o.lugar, o.telefono].some((v) => String(v || '').toLowerCase().includes(filtro)))
+    .filter((o) => filtroEstado === 'todas' || (filtroEstado === 'porCobrar' && !o.pagada) || (filtroEstado === 'porAtender' && !o.atendida) || (filtroEstado === 'listas' && o.pagada && o.atendida));
   const estado = $('#histEstado');
   estado.hidden = vis.length > 0;
   estado.textContent = ordenes.length ? 'No hay órdenes que coincidan.' : 'Todavía no hay órdenes guardadas.';
@@ -513,10 +568,17 @@ function pintarHistorial() {
     abrir.addEventListener('click', () => abrirOrden(o));
     pdf.addEventListener('click', () => { abrirOrden(o); generarPdf(); });
     borrar.addEventListener('click', () => eliminarOrden(o));
-    lista.appendChild(el('div', { class: 'hist-item' }, [
+    const casilla = (campo, texto) => {
+      const c = el('input', { type: 'checkbox' }); c.checked = !!o[campo];
+      c.addEventListener('change', () => marcar(o, campo, c.checked, c));
+      return el('label', { class: 'marca ' + (o[campo] ? 'si' : 'no') }, [c, document.createTextNode(texto)]);
+    };
+    const anticipo = !o.pagada && Number(o.anticipo) > 0 ? ' · anticipo ' + dinero(Number(o.anticipo)) : '';
+    lista.appendChild(el('div', { class: 'hist-item' + (o.pagada && o.atendida ? ' lista' : '') }, [
       el('div', { class: 't' }, [el('small', { text: String(o.numero || '') }), document.createTextNode(String(o.clienta || ''))]),
       el('div', { class: 'm', text: dinero(Number(o.total) || 0) }),
-      el('div', { class: 'd', text: (evento || 'Sin datos del evento') + (creada ? ' · creada ' + creada : '') }),
+      el('div', { class: 'd', text: (evento || 'Sin datos del evento') + (creada ? ' · creada ' + creada : '') + anticipo }),
+      el('div', { class: 'marcas' }, [casilla('atendida', 'Atendida'), casilla('pagada', 'Pagada')]),
       el('div', { class: 'b' }, [abrir, pdf, borrar])
     ]));
   });

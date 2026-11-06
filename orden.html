@@ -7,7 +7,7 @@
   <title>Generar orden | Brinel Beauty</title>
   <meta name="theme-color" content="#B5105F" />
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="Brinel_Orden.css?v=8" />
+  <link rel="stylesheet" href="Brinel_Orden.css?v=9" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
 </head>
@@ -50,8 +50,39 @@
       <input type="search" id="buscar" placeholder="Buscar por clienta, número o evento" maxlength="60" />
       <button type="button" class="btn btn-rosa" id="btnNueva">+ Nueva orden</button>
     </div>
-    <p class="vacio" id="histEstado">Cargando órdenes…</p>
-    <div class="hist-lista" id="histLista"></div>
+    <div class="hist-filtros" id="histFiltros">
+      <button type="button" class="filtro activo" data-f="todas">Todas</button>
+      <button type="button" class="filtro" data-f="porCobrar">Por cobrar</button>
+      <button type="button" class="filtro" data-f="porAtender">Por atender</button>
+      <button type="button" class="filtro" data-f="listas">Atendidas y pagadas</button>
+    </div>
+    <div class="hist-cuerpo">
+      <aside class="caja" aria-label="Resumen de dinero">
+        <div class="caja-cab">
+          <h2>Caja</h2>
+          <select id="periodo" aria-label="Periodo">
+            <option value="mes">Este mes</option>
+            <option value="anterior">Mes pasado</option>
+            <option value="anio">Este año</option>
+            <option value="todo">Todo</option>
+          </select>
+        </div>
+        <div class="caja-total"><small>Cobrado</small><b id="cajaCobrado">Q 0.00</b></div>
+        <div class="caja-fila"><span>Por cobrar</span><b id="cajaPorCobrar">Q 0.00</b></div>
+        <div class="caja-fila"><span>Total en órdenes</span><b id="cajaTotal">Q 0.00</b></div>
+        <div class="caja-barra"><i id="cajaBarra"></i></div>
+        <div class="caja-conteo">
+          <div><b id="cajaOrdenes">0</b><small>órdenes</small></div>
+          <div><b id="cajaAtendidas">0</b><small>atendidas</small></div>
+          <div><b id="cajaPagadas">0</b><small>pagadas</small></div>
+        </div>
+        <p class="caja-nota">Cuenta por la fecha del evento (o la de la orden si no tiene). «Cobrado» suma las órdenes pagadas y los anticipos de las demás.</p>
+      </aside>
+      <div>
+        <p class="vacio" id="histEstado">Cargando órdenes…</p>
+        <div class="hist-lista" id="histLista"></div>
+      </div>
+    </div>
   </section>
 
   <main class="contenido" id="vistaOrden">
@@ -193,6 +224,6 @@
     <p class="panel-pdf-nota">Instagram no acepta archivos PDF: para Instagram use «imagen».</p>
   </div>
 </div>
-<script type="module" src="Brinel_Orden.js?v=8"></script>
+<script type="module" src="Brinel_Orden.js?v=9"></script>
 </body>
 </html>
