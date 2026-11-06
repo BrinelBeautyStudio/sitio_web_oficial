@@ -815,13 +815,24 @@ form.elements.clienta.addEventListener('change', () => {
   const c = buscarClienta(form.elements.clienta.value);
   if (c && !form.elements.telefono.value.trim() && c.telefono) { form.elements.telefono.value = c.telefono; actualizar(); }
 });
+const K_CLI_POR_PAGINA = 'brinel-cli-por-pagina';
+let cliPagina = 1;
+let cliPorPagina = [5, 10, 20, 50].includes(+leer(K_CLI_POR_PAGINA)) ? +leer(K_CLI_POR_PAGINA) : 10;
 function pintarClientas() {
   const q = normal($('#buscarClienta').value);
   const todas = listaClientas();
   const vis = todas.filter((c) => !q || normal(c.nombre).includes(q) || String(c.telefono).replace(/\D/g, '').includes(q.replace(/\D/g, '') || '¬'));
   $('#resumenClientas').textContent = todas.length + (todas.length === 1 ? ' clienta' : ' clientas') + ' en total' + (q ? ' · ' + vis.length + ' coinciden' : '');
   const lista = $('#listaClientasV'); lista.textContent = '';
-  vis.slice(0, 100).forEach((c) => {
+  const paginas = Math.max(1, Math.ceil(vis.length / cliPorPagina));
+  cliPagina = Math.min(Math.max(1, cliPagina), paginas);
+  const desde = (cliPagina - 1) * cliPorPagina;
+  $('#cliPaginas').hidden = vis.length === 0;
+  $('#cliPagInfo').textContent = vis.length ? (desde + 1) + '–' + Math.min(desde + cliPorPagina, vis.length) + ' de ' + vis.length : '';
+  $('#cliPagNum').textContent = cliPagina + ' / ' + paginas;
+  $('#cliPrimera').disabled = $('#cliAnterior').disabled = cliPagina <= 1;
+  $('#cliSiguiente').disabled = $('#cliUltima').disabled = cliPagina >= paginas;
+  vis.slice(desde, desde + cliPorPagina).forEach((c) => {
     const nueva = el('button', { type: 'button', text: 'Nueva orden' });
     nueva.addEventListener('click', () => { nuevaOrden(); form.elements.clienta.value = c.nombre; form.elements.telefono.value = c.telefono || ''; actualizar(); });
     const ver = el('button', { type: 'button', text: 'Ver órdenes' });
@@ -839,7 +850,14 @@ function pintarClientas() {
   });
   if (!vis.length) lista.appendChild(el('p', { class: 'vacio', text: todas.length ? 'Ninguna clienta coincide.' : 'Todavía no hay clientas.' }));
 }
-$('#buscarClienta').addEventListener('input', pintarClientas);
+$('#buscarClienta').addEventListener('input', () => { cliPagina = 1; pintarClientas(); });
+$('#cliPorPagina').value = String(cliPorPagina);
+$('#cliPorPagina').addEventListener('change', () => { cliPorPagina = +$('#cliPorPagina').value; guardarLocal(K_CLI_POR_PAGINA, String(cliPorPagina)); cliPagina = 1; pintarClientas(); });
+const cliIrA = (n) => { cliPagina = n; pintarClientas(); $('#vistaClientas').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+$('#cliPrimera').addEventListener('click', () => cliIrA(1));
+$('#cliAnterior').addEventListener('click', () => cliIrA(cliPagina - 1));
+$('#cliSiguiente').addEventListener('click', () => cliIrA(cliPagina + 1));
+$('#cliUltima').addEventListener('click', () => cliIrA(Infinity));
 
 // ═════════════ SOLICITUDES DE LA PÁGINA ═════════════
 let solicitudes = []; let solFiltro = 'nueva';
