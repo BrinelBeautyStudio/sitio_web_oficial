@@ -6,8 +6,11 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Generar orden | Brinel Beauty</title>
   <meta name="theme-color" content="#B5105F" />
+  <link rel="manifest" href="ordenes.webmanifest" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Órdenes" />
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="Brinel_Orden.css?v=13" />
+  <link rel="stylesheet" href="Brinel_Orden.css?v=14" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
 </head>
@@ -23,6 +26,8 @@
       <span class="g">G</span> Entrar con Google
     </button>
     <p class="ingreso-msg" id="msgIngreso">Cargando…</p>
+    <button type="button" class="btn btn-borde btn-instalar" id="btnInstalar" hidden>📲 Instalar en este teléfono</button>
+    <p class="ayuda-instalar" id="ayudaInstalar" hidden></p>
     <a class="ingreso-volver" href="./">← Volver a la página</a>
   </div>
 </div>
@@ -318,6 +323,6 @@
     <p class="panel-pdf-nota">Instagram no acepta archivos PDF: para Instagram use «imagen».</p>
   </div>
 </div>
-<script type="module" src="Brinel_Orden.js?v=13"></script>
+<script type="module" src="Brinel_Orden.js?v=14"></script>
 </body>
 </html>

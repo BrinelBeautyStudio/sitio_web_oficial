@@ -1008,6 +1008,23 @@ $('#btnReporte').addEventListener('click', async () => {
   finally { b.disabled = false; }
 });
 
+// ═════════════ INSTALAR COMO APP ═════════════
+// Android/Chrome ofrece instalar; en iPhone se explica cómo agregarla a la pantalla de inicio.
+let promptInstalar = null;
+const yaInstalada = window.matchMedia('(display-mode: minimal-ui), (display-mode: standalone)').matches || navigator.standalone === true;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); promptInstalar = e; if (!yaInstalada) $('#btnInstalar').hidden = false; });
+$('#btnInstalar').addEventListener('click', async () => {
+  if (!promptInstalar) return;
+  promptInstalar.prompt();
+  try { await promptInstalar.userChoice; } catch (e) { /* nada */ }
+  promptInstalar = null; $('#btnInstalar').hidden = true;
+});
+window.addEventListener('appinstalled', () => { $('#btnInstalar').hidden = true; aviso('Listo: ya está en la pantalla de inicio.'); });
+if (!yaInstalada && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  $('#ayudaInstalar').textContent = 'Para tenerla como app: toque Compartir (□↑) y luego «Agregar a inicio».';
+  $('#ayudaInstalar').hidden = false;
+}
+
 // ═════════════ INICIO ═════════════
 let iniciada = false;
 function iniciarApp() {

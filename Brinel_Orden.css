@@ -278,3 +278,5 @@ body > .hoja { position: absolute; left: -10000px; top: 0; }
 .rep-kpis b { display: block; font-size: 18px; margin-top: 4px; color: var(--texto); }
 .hoja-reporte td { padding: 7px 6px; }
 @media (max-width: 560px) { .fila-precio { grid-template-columns: minmax(0, 1fr) 100px 44px; } }
+.btn-instalar { width: 100%; margin-top: 12px; }
+.ayuda-instalar { margin: 14px 0 0 !important; font-size: 13px; color: var(--gris); background: var(--rosa-suave); border-radius: 10px; padding: 8px 10px; }
