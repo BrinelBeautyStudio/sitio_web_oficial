@@ -512,6 +512,10 @@ function enPeriodo(o, periodo) {
 }
 const cobradoDe = (o) => o.pagada ? (Number(o.total) || 0) : Math.min(Number(o.anticipo) || 0, Number(o.total) || 0);
 let filtroEstado = 'todas';
+// Paginación del historial.
+const K_POR_PAGINA = 'brinel-por-pagina';
+let pagina = 1;
+let porPagina = [5, 10, 20, 50].includes(+leer(K_POR_PAGINA)) ? +leer(K_POR_PAGINA) : 10;
 
 function pintarCaja() {
   const periodo = $('#periodo').value;
@@ -528,7 +532,7 @@ function pintarCaja() {
 }
 $('#periodo').addEventListener('change', pintarCaja);
 document.querySelectorAll('#histFiltros .filtro').forEach((b) => b.addEventListener('click', () => {
-  filtroEstado = b.dataset.f;
+  filtroEstado = b.dataset.f; pagina = 1;
   document.querySelectorAll('#histFiltros .filtro').forEach((x) => x.classList.toggle('activo', x === b));
   pintarHistorial();
 }));
@@ -559,7 +563,15 @@ function pintarHistorial() {
   const estado = $('#histEstado');
   estado.hidden = vis.length > 0;
   estado.textContent = ordenes.length ? 'No hay órdenes que coincidan.' : 'Todavía no hay órdenes guardadas.';
-  vis.forEach((o) => {
+  const paginas = Math.max(1, Math.ceil(vis.length / porPagina));
+  pagina = Math.min(Math.max(1, pagina), paginas);
+  const desde = (pagina - 1) * porPagina;
+  $('#paginas').hidden = vis.length === 0;
+  $('#pagInfo').textContent = vis.length ? (desde + 1) + '–' + Math.min(desde + porPagina, vis.length) + ' de ' + vis.length : '';
+  $('#pagNum').textContent = pagina + ' / ' + paginas;
+  $('#pagPrimera').disabled = $('#pagAnterior').disabled = pagina <= 1;
+  $('#pagSiguiente').disabled = $('#pagUltima').disabled = pagina >= paginas;
+  vis.slice(desde, desde + porPagina).forEach((o) => {
     const creada = o.creada && o.creada.toDate ? fechaCorta(o.creada.toDate()) : '';
     const evento = [o.evento, fechaLarga(o.fecha), o.lugar].filter(Boolean).join(' · ');
     const abrir = el('button', { type: 'button', text: 'Abrir' });
@@ -583,7 +595,14 @@ function pintarHistorial() {
     ]));
   });
 }
-$('#buscar').addEventListener('input', pintarHistorial);
+$('#buscar').addEventListener('input', () => { pagina = 1; pintarHistorial(); });
+$('#porPagina').value = String(porPagina);
+$('#porPagina').addEventListener('change', () => { porPagina = +$('#porPagina').value; guardarLocal(K_POR_PAGINA, String(porPagina)); pagina = 1; pintarHistorial(); });
+const irA = (n) => { pagina = n; pintarHistorial(); $('#vistaHistorial').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+$('#pagPrimera').addEventListener('click', () => irA(1));
+$('#pagAnterior').addEventListener('click', () => irA(pagina - 1));
+$('#pagSiguiente').addEventListener('click', () => irA(pagina + 1));
+$('#pagUltima').addEventListener('click', () => irA(Infinity));
 
 function abrirOrden(o) {
   idActual = o.id; numeroActual = String(o.numero || '');

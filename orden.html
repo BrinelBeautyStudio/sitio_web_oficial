@@ -7,7 +7,7 @@
   <title>Generar orden | Brinel Beauty</title>
   <meta name="theme-color" content="#B5105F" />
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="Brinel_Orden.css?v=9" />
+  <link rel="stylesheet" href="Brinel_Orden.css?v=10" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
 </head>
@@ -81,6 +81,24 @@
       <div>
         <p class="vacio" id="histEstado">Cargando órdenes…</p>
         <div class="hist-lista" id="histLista"></div>
+        <div class="paginas" id="paginas" hidden>
+          <label class="por-pagina">Mostrar
+            <select id="porPagina">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+          </label>
+          <span class="pag-info" id="pagInfo"></span>
+          <div class="pag-botones">
+            <button type="button" class="pag" id="pagPrimera" aria-label="Primera página">«</button>
+            <button type="button" class="pag" id="pagAnterior" aria-label="Página anterior">‹</button>
+            <span class="pag-num" id="pagNum"></span>
+            <button type="button" class="pag" id="pagSiguiente" aria-label="Página siguiente">›</button>
+            <button type="button" class="pag" id="pagUltima" aria-label="Última página">»</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -224,6 +242,6 @@
     <p class="panel-pdf-nota">Instagram no acepta archivos PDF: para Instagram use «imagen».</p>
   </div>
 </div>
-<script type="module" src="Brinel_Orden.js?v=9"></script>
+<script type="module" src="Brinel_Orden.js?v=10"></script>
 </body>
 </html>

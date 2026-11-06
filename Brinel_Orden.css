@@ -204,3 +204,14 @@ body > .hoja { position: absolute; left: -10000px; top: 0; }
 }
 .hist-barra .btn { white-space: nowrap; }
 @media (max-width: 560px) { .hist-barra .btn { padding: 10px 14px; font-size: 14px; } .hist-barra input { min-width: 0; } }
+
+/* ───── v10: paginación ───── */
+.paginas { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 14px; background: #fff; border: 1px solid var(--borde); border-radius: 14px; padding: 10px 12px; }
+.por-pagina { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--gris); }
+.por-pagina select { font: inherit; font-size: 14px; border: 1px solid #E6CFDB; border-radius: 999px; padding: 5px 10px; background: #fff; color: var(--texto); }
+.pag-info { font-size: 13.5px; color: var(--gris); }
+.pag-botones { display: flex; align-items: center; gap: 6px; }
+.pag { font: inherit; font-size: 18px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--rosa); background: #fff; color: var(--rosa); cursor: pointer; line-height: 1; }
+.pag:disabled { opacity: .35; cursor: default; }
+.pag-num { min-width: 56px; text-align: center; font-weight: 600; color: var(--texto); font-size: 14px; }
+@media (max-width: 560px) { .pag-info { order: 3; width: 100%; text-align: center; } .paginas { justify-content: center; } }
