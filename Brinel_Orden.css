@@ -251,3 +251,30 @@ body > .hoja { position: absolute; left: -10000px; top: 0; }
   .cal-barra h2 { min-width: 0; flex: 1; font-size: 18px; }
   .cal-semana, .cal-grid { gap: 4px; }
 }
+
+/* ───── v12: clientas, solicitudes, precios, reportes, reseña ───── */
+.pestanas { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.pestanas::-webkit-scrollbar { display: none; }
+.pestana { flex: none; white-space: nowrap; }
+.insignia { display: inline-flex; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--rosa); color: #fff; font-size: 12px; align-items: center; justify-content: center; margin-left: 4px; vertical-align: 2px; }
+.seccion-admin { max-width: 900px; margin: 0 auto; padding: 16px 16px 40px; }
+.pista { margin: -2px 0 0; font-size: 13px; color: #8A0F4F; background: var(--rosa-suave); border-radius: 10px; padding: 7px 12px; }
+.btn-wa.resena { border-color: #F59E0B; color: #B45309; }
+.btn-wa.resena::before { background: #F59E0B; }
+.sol-fecha { font-size: 14px; }
+.caja-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.caja-botones button { font: inherit; font-size: 13.5px; font-weight: 600; border-radius: 999px; padding: 8px 10px; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.1); color: #fff; cursor: pointer; }
+.caja-botones button:disabled { opacity: .6; cursor: wait; }
+.lista-precios { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.fila-precio { display: grid; grid-template-columns: minmax(0, 1fr) 130px 44px; gap: 8px; align-items: center; }
+.fila-precio input { font: inherit; font-size: 16px; padding: 9px 12px; border: 1px solid #E6CFDB; border-radius: 10px; width: 100%; }
+.fila-precio .quitar { border: 0; background: #FDE2E2; color: #B91C1C; border-radius: 10px; width: 44px; height: 42px; font-size: 20px; cursor: pointer; }
+.botones-fila { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; }
+/* Hoja del reporte (fuera de pantalla, igual que la orden) */
+.hoja-reporte .cuerpo { justify-content: flex-start; gap: 6px; }
+.rep-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.rep-kpis div { background: var(--rosa-suave); border-radius: 12px; padding: 12px 14px; }
+.rep-kpis small { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--gris); }
+.rep-kpis b { display: block; font-size: 18px; margin-top: 4px; color: var(--texto); }
+.hoja-reporte td { padding: 7px 6px; }
+@media (max-width: 560px) { .fila-precio { grid-template-columns: minmax(0, 1fr) 100px 44px; } }

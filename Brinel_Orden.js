@@ -6,7 +6,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence }
   from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, runTransaction, getDocs, query, orderBy, limit, serverTimestamp }
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, runTransaction, getDocs, getDoc, setDoc, query, orderBy, limit, serverTimestamp }
   from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 // Configuración pública del proyecto (no es secreta: la protección está en las reglas).
@@ -131,32 +131,49 @@ onAuthStateChanged(auth, async (u) => {
 });
 
 // ═════════════ PESTAÑAS ═════════════
+const VISTAS = { orden: 'vistaOrden', calendario: 'vistaCalendario', historial: 'vistaHistorial', clientas: 'vistaClientas', solicitudes: 'vistaSolicitudes', precios: 'vistaPrecios' };
+const TABS = { orden: 'tabOrden', calendario: 'tabCalendario', historial: 'tabHistorial', clientas: 'tabClientas', solicitudes: 'tabSolicitudes', precios: 'tabPrecios' };
 function mostrar(vista) {
-  $('#vistaOrden').hidden = vista !== 'orden';
-  $('#vistaHistorial').hidden = vista !== 'historial';
-  $('#vistaCalendario').hidden = vista !== 'calendario';
-  $('#tabOrden').classList.toggle('activa', vista === 'orden');
-  $('#tabHistorial').classList.toggle('activa', vista === 'historial');
-  $('#tabCalendario').classList.toggle('activa', vista === 'calendario');
+  Object.keys(VISTAS).forEach((k) => { $('#' + VISTAS[k]).hidden = k !== vista; $('#' + TABS[k]).classList.toggle('activa', k === vista); });
+  try { $('#' + TABS[vista]).scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) { /* nada */ }
   $('#tabOrden').textContent = idActual ? 'Orden ' + numeroActual : 'Nueva orden';
   if (vista === 'historial') cargarHistorial();
   if (vista === 'calendario') cargarOrdenes().then(pintarCalendario);
+  if (vista === 'clientas') cargarOrdenes().then(pintarClientas);
+  if (vista === 'solicitudes') cargarSolicitudes();
+  if (vista === 'precios') pintarPrecios();
   if (vista === 'orden') pintarVista();
   window.scrollTo(0, 0);
 }
 $('#tabOrden').addEventListener('click', () => mostrar('orden'));
 $('#tabHistorial').addEventListener('click', () => mostrar('historial'));
 $('#tabCalendario').addEventListener('click', () => mostrar('calendario'));
+$('#tabClientas').addEventListener('click', () => mostrar('clientas'));
+$('#tabSolicitudes').addEventListener('click', () => mostrar('solicitudes'));
+$('#tabPrecios').addEventListener('click', () => mostrar('precios'));
 
 // ═════════════ FORMULARIO ═════════════
-SERVICIOS.concat([OTRO]).forEach((s) => {
-  const b = el('button', { type: 'button', class: 'chip', text: '+ ' + s });
-  b.addEventListener('click', () => { agregarLinea({ servicio: s === OTRO ? '' : s }); actualizar(); });
-  $('#chips').appendChild(b);
-});
+// Catálogo de servicios con precio sugerido (se edita en la pestaña Precios).
+let catalogo = SERVICIOS.map((nombre) => ({ nombre, precio: 0 }));
 const dl = el('datalist', { id: 'listaServicios' });
-SERVICIOS.forEach((s) => dl.appendChild(el('option', { value: s })));
 document.body.appendChild(dl);
+function pintarChips() {
+  const chips = $('#chips'); chips.textContent = ''; dl.textContent = '';
+  catalogo.concat([{ nombre: OTRO, precio: 0 }]).forEach((c) => {
+    const b = el('button', { type: 'button', class: 'chip', text: '+ ' + c.nombre + (c.precio ? ' · Q' + c.precio : '') });
+    b.addEventListener('click', () => { agregarLinea(c.nombre === OTRO ? {} : { servicio: c.nombre, precio: c.precio || '' }); actualizar(); });
+    chips.appendChild(b);
+    if (c.nombre !== OTRO) dl.appendChild(el('option', { value: c.nombre }));
+  });
+}
+pintarChips();
+async function cargarCatalogo() {
+  try {
+    const r = await getDoc(doc(db, 'config', 'servicios'));
+    const lista = r.exists() && Array.isArray(r.data().lista) ? r.data().lista : null;
+    if (lista && lista.length) { catalogo = lista.map((c) => ({ nombre: String(c.nombre || '').slice(0, 50), precio: num(c.precio) })).filter((c) => c.nombre); pintarChips(); }
+  } catch (e) { console.warn('[Ordenes] catálogo', e); }
+}
 
 function agregarLinea(d = {}) {
   const fila = el('div', { class: 'linea' });
@@ -214,6 +231,7 @@ function poner(clave, texto, pendiente) {
 
 function actualizar() {
   avisarChoques();
+  pistaClienta();
   const f = form.elements;
   const ls = leerLineas();
   const d = datosOrden();
@@ -388,45 +406,49 @@ function cargarLibs() {
 }
 
 let pdfListo = null; // { blob, nombre, img, nombreImg }
+const limpiarNombre = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ñ/gi, 'n')
+  .replace(/[^A-Za-z0-9_-]+/g, '_').replace(/_+/g, '_').slice(0, 80);
+
+// Fotografía un elemento de tamaño carta y lo convierte en PDF (y JPG).
+async function crearPdf(elemento, nombreBase) {
+  await cargarLibs();
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  const antes = elemento.getAttribute('style') || '';
+  elemento.setAttribute('style', 'position:absolute;left:0;top:' + window.scrollY + 'px;z-index:-1;');
+  let lienzo;
+  try {
+    lienzo = await window.html2canvas(elemento, {
+      scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false,
+      windowWidth: 816, scrollX: 0, scrollY: -window.scrollY
+    });
+  } finally {
+    elemento.setAttribute('style', antes);
+  }
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ unit: 'in', format: 'letter', orientation: 'portrait', compress: true });
+  const anchoPx = lienzo.width; const altoPaginaPx = Math.round(anchoPx * 11 / 8.5);
+  for (let y = 0, pag = 0; y < lienzo.height - 2; y += altoPaginaPx, pag++) {
+    const alto = Math.min(altoPaginaPx, lienzo.height - y);
+    const trozo = document.createElement('canvas');
+    trozo.width = anchoPx; trozo.height = alto;
+    const ctx = trozo.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, anchoPx, alto);
+    ctx.drawImage(lienzo, 0, y, anchoPx, alto, 0, 0, anchoPx, alto);
+    if (pag > 0) pdf.addPage('letter', 'portrait');
+    pdf.addImage(trozo.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 8.5, alto * 8.5 / anchoPx);
+  }
+  // Nombre sin tildes: con tildes algunos teléfonos lo guardan como "download" sin .pdf.
+  const nombre = limpiarNombre(nombreBase) + '.pdf';
+  const img = await new Promise((ok) => lienzo.toBlob(ok, 'image/jpeg', 0.92));
+  return { blob: pdf.output('blob'), nombre, img, nombreImg: nombre.replace(/\.pdf$/, '.jpg') };
+}
+
 async function generarPdf() {
   const btn = $('#btnPdf'); btn.disabled = true;
   aviso('Preparando el PDF…');
   try {
-    await cargarLibs();
     actualizar();
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    // La hoja vive fuera de pantalla; se coloca un momento en la esquina para fotografiarla.
-    const antes = hoja.getAttribute('style') || '';
-    hoja.setAttribute('style', 'position:absolute;left:0;top:' + window.scrollY + 'px;z-index:-1;');
-    let lienzo;
-    try {
-      lienzo = await window.html2canvas(hoja, {
-        scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false,
-        windowWidth: 816, scrollX: 0, scrollY: -window.scrollY
-      });
-    } finally {
-      hoja.setAttribute('style', antes);
-    }
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ unit: 'in', format: 'letter', orientation: 'portrait', compress: true });
-    const anchoPx = lienzo.width; const altoPaginaPx = Math.round(anchoPx * 11 / 8.5);
-    for (let y = 0, pag = 0; y < lienzo.height - 2; y += altoPaginaPx, pag++) {
-      const alto = Math.min(altoPaginaPx, lienzo.height - y);
-      const trozo = document.createElement('canvas');
-      trozo.width = anchoPx; trozo.height = alto;
-      const ctx = trozo.getContext('2d');
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, anchoPx, alto);
-      ctx.drawImage(lienzo, 0, y, anchoPx, alto, 0, 0, anchoPx, alto);
-      if (pag > 0) pdf.addPage('letter', 'portrait');
-      pdf.addImage(trozo.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 8.5, alto * 8.5 / anchoPx);
-    }
-    // Nombre de archivo solo con letras sin tilde: con tildes algunos teléfonos lo guardan como "download" sin .pdf.
-    const nombre = ('Orden_' + (numeroActual || 'nueva') + '_' + form.elements.clienta.value.trim())
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ñ/gi, 'n')
-      .replace(/[^A-Za-z0-9_-]+/g, '_').replace(/_+/g, '_').slice(0, 80) + '.pdf';
-    // Versión en imagen (JPG): Instagram y otras apps no aceptan PDF.
-    const img = await new Promise((ok) => lienzo.toBlob(ok, 'image/jpeg', 0.92));
-    pdfListo = { blob: pdf.output('blob'), nombre, img, nombreImg: nombre.replace(/\.pdf$/, '.jpg') };
+    pdfListo = await crearPdf(hoja, 'Orden_' + (numeroActual || 'nueva') + '_' + form.elements.clienta.value.trim());
     mostrarPanelPdf();
   } catch (e) {
     console.error('[Ordenes] Error al crear el PDF', e);
@@ -495,7 +517,7 @@ function cargarOrdenes() {
   if (ordenes.length) return Promise.resolve(ordenes);
   if (!cargando) {
     cargando = getDocs(query(collection(db, 'ordenes'), orderBy('creada', 'desc'), limit(500)))
-      .then((r) => { ordenes = r.docs.map((x) => Object.assign({ id: x.id }, x.data())); return ordenes; })
+      .then((r) => { ordenes = r.docs.map((x) => Object.assign({ id: x.id }, x.data())); datalistClientas(); return ordenes; })
       .finally(() => { cargando = null; });
   }
   return cargando;
@@ -603,7 +625,7 @@ function pintarHistorial() {
       el('div', { class: 'm', text: dinero(Number(o.total) || 0) }),
       el('div', { class: 'd', text: (evento || 'Sin datos del evento') + (creada ? ' · creada ' + creada : '') + anticipo }),
       el('div', { class: 'marcas' }, [casilla('atendida', 'Atendida'), casilla('pagada', 'Pagada')]),
-      el('div', { class: 'b' }, [abrir, pdf, botonWhatsApp(o), borrar])
+      el('div', { class: 'b' }, [abrir, pdf, botonWhatsApp(o)].concat(o.atendida ? [botonResena(o)] : []).concat([borrar]))
     ]));
   });
 }
@@ -744,12 +766,238 @@ $('#calAnterior').addEventListener('click', () => { calMes.setMonth(calMes.getMo
 $('#calSiguiente').addEventListener('click', () => { calMes.setMonth(calMes.getMonth() + 1); pintarCalendario(); });
 $('#calHoy').addEventListener('click', () => { calMes = new Date(); calMes.setDate(1); calSel = isoDe(new Date()); pintarCalendario(); });
 
+// ═════════════ RESEÑA DESPUÉS DEL SERVICIO ═════════════
+const REDES = 'Instagram: https://www.instagram.com/brinelbeauty/\nFacebook: https://www.facebook.com/profile.php?id=61559389152870';
+function botonResena(o) {
+  const tel = telefonoWhatsApp(o.telefono);
+  const nombre = String(o.clienta || '').trim().split(/\s+/)[0] || '';
+  const texto = 'Hola ' + nombre + ' 💖\nGracias por elegir *Brinel Beauty Studio & Academy*.\n\n' +
+    '¿Cómo te sentiste con tu servicio? Nos encantaría leer tu opinión ⭐\n' +
+    'Y si tienes fotos de tu look, compártelas y etiquétanos en Instagram *@brinelbeauty* 📸\n\n' + REDES + '\n\n¡Te esperamos pronto!';
+  const a = el('a', { class: 'btn-wa resena' + (tel ? '' : ' sin'), target: '_blank', rel: 'noopener', text: 'Pedir reseña' });
+  if (tel) a.href = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(texto);
+  else a.addEventListener('click', () => aviso('Esta orden no tiene teléfono.', true));
+  return a;
+}
+
+// ═════════════ CLIENTAS FRECUENTES ═════════════
+const normal = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+function listaClientas() {
+  const mapa = new Map();
+  ordenes.forEach((o) => {
+    const clave = telefonoWhatsApp(o.telefono) || 'n:' + normal(o.clienta);
+    if (clave === 'n:') return;
+    const f = fechaDe(o); const c = mapa.get(clave) || { nombre: '', telefono: '', ordenes: [], total: 0, ultima: null };
+    c.ordenes.push(o); c.total += Number(o.total) || 0;
+    if (!c.ultima || (f && f > c.ultima)) { c.ultima = f; c.nombre = o.clienta || c.nombre; c.telefono = o.telefono || c.telefono; }
+    if (!c.nombre) c.nombre = o.clienta; if (!c.telefono) c.telefono = o.telefono || '';
+    mapa.set(clave, c);
+  });
+  return [...mapa.values()].sort((a, b) => (b.ultima || 0) - (a.ultima || 0));
+}
+function buscarClienta(nombre) {
+  const n = normal(nombre); if (!n) return null;
+  return listaClientas().find((c) => normal(c.nombre) === n) || null;
+}
+function pistaClienta() {
+  const p = $('#pistaClienta'); const f = form.elements;
+  const c = idActual ? null : buscarClienta(f.clienta.value);
+  if (!c) { p.hidden = true; return; }
+  p.textContent = '💖 Clienta frecuente · ' + c.ordenes.length + (c.ordenes.length === 1 ? ' orden' : ' órdenes') + ' · ' + dinero(c.total) +
+    (c.ultima ? ' · última: ' + fechaCorta(c.ultima) : '');
+  p.hidden = false;
+}
+function datalistClientas() {
+  const dlc = $('#listaClientas'); dlc.textContent = '';
+  listaClientas().slice(0, 300).forEach((c) => dlc.appendChild(el('option', { value: c.nombre }, [])));
+}
+form.elements.clienta.addEventListener('change', () => {
+  const c = buscarClienta(form.elements.clienta.value);
+  if (c && !form.elements.telefono.value.trim() && c.telefono) { form.elements.telefono.value = c.telefono; actualizar(); }
+});
+function pintarClientas() {
+  const q = normal($('#buscarClienta').value);
+  const todas = listaClientas();
+  const vis = todas.filter((c) => !q || normal(c.nombre).includes(q) || String(c.telefono).replace(/\D/g, '').includes(q.replace(/\D/g, '') || '¬'));
+  $('#resumenClientas').textContent = todas.length + (todas.length === 1 ? ' clienta' : ' clientas') + ' en total' + (q ? ' · ' + vis.length + ' coinciden' : '');
+  const lista = $('#listaClientasV'); lista.textContent = '';
+  vis.slice(0, 100).forEach((c) => {
+    const nueva = el('button', { type: 'button', text: 'Nueva orden' });
+    nueva.addEventListener('click', () => { nuevaOrden(); form.elements.clienta.value = c.nombre; form.elements.telefono.value = c.telefono || ''; actualizar(); });
+    const ver = el('button', { type: 'button', text: 'Ver órdenes' });
+    ver.addEventListener('click', () => { mostrar('historial'); $('#buscar').value = c.nombre; pagina = 1; pintarHistorial(); });
+    const tel = telefonoWhatsApp(c.telefono);
+    const wa = el('a', { class: 'btn-wa' + (tel ? '' : ' sin'), target: '_blank', rel: 'noopener', text: 'WhatsApp' });
+    if (tel) wa.href = 'https://wa.me/' + tel;
+    const pagadas = c.ordenes.filter((o) => o.pagada).length;
+    lista.appendChild(el('div', { class: 'hist-item' }, [
+      el('div', { class: 't' }, [document.createTextNode(c.nombre)]),
+      el('div', { class: 'm', text: dinero(c.total) }),
+      el('div', { class: 'd', text: [c.telefono, c.ordenes.length + (c.ordenes.length === 1 ? ' orden' : ' órdenes'), pagadas + ' pagadas', c.ultima ? 'última ' + fechaCorta(c.ultima) : ''].filter(Boolean).join(' · ') }),
+      el('div', { class: 'b' }, [nueva, ver, wa])
+    ]));
+  });
+  if (!vis.length) lista.appendChild(el('p', { class: 'vacio', text: todas.length ? 'Ninguna clienta coincide.' : 'Todavía no hay clientas.' }));
+}
+$('#buscarClienta').addEventListener('input', pintarClientas);
+
+// ═════════════ SOLICITUDES DE LA PÁGINA ═════════════
+let solicitudes = []; let solFiltro = 'nueva';
+async function cargarSolicitudes() {
+  try {
+    const r = await getDocs(query(collection(db, 'solicitudes'), orderBy('creada', 'desc'), limit(200)));
+    solicitudes = r.docs.map((x) => Object.assign({ id: x.id }, x.data()));
+  } catch (e) { console.warn('[Ordenes] solicitudes', e); $('#solEstado').textContent = 'No se pudieron cargar las solicitudes.'; return; }
+  pintarSolicitudes();
+}
+function pintarSolicitudes() {
+  const nuevas = solicitudes.filter((x) => (x.estado || 'nueva') === 'nueva').length;
+  $('#insigniaSol').textContent = nuevas; $('#insigniaSol').hidden = !nuevas;
+  const vis = solicitudes.filter((x) => (x.estado || 'nueva') === solFiltro);
+  const est = $('#solEstado'); est.hidden = vis.length > 0; est.textContent = 'No hay solicitudes aquí.';
+  const lista = $('#solLista'); lista.textContent = '';
+  vis.forEach((x) => {
+    const fechaTxt = /^\d{4}-\d{2}-\d{2}$/.test(x.fecha || '') ? fechaLarga(x.fecha) : 'sin fecha';
+    const recibida = x.creada && x.creada.toDate ? fechaCorta(x.creada.toDate()) : '';
+    const crear = el('button', { type: 'button', text: 'Crear orden' });
+    crear.addEventListener('click', () => convertirSolicitud(x));
+    const descartar = el('button', { type: 'button', class: 'borrar', text: 'Descartar' });
+    descartar.addEventListener('click', () => cambiarSolicitud(x, 'descartada'));
+    const tel = telefonoWhatsApp(x.telefono);
+    const wa = el('a', { class: 'btn-wa' + (tel ? '' : ' sin'), target: '_blank', rel: 'noopener', text: 'WhatsApp' });
+    if (tel) wa.href = 'https://wa.me/' + tel + '?text=' + encodeURIComponent('Hola ' + (String(x.nombre || '').split(' ')[0]) + ' 💖\nRecibimos tu solicitud de cita en *Brinel Beauty Studio & Academy* para ' + (x.servicio || 'tu servicio') + (x.fecha ? ' el ' + cuandoTexto(x.fecha).replace(/^el /, '') : '') + '.\n¿A qué hora te queda mejor?');
+    const botones = [wa];
+    if ((x.estado || 'nueva') !== 'convertida') botones.unshift(crear);
+    if ((x.estado || 'nueva') === 'nueva') botones.push(descartar);
+    lista.appendChild(el('div', { class: 'hist-item' }, [
+      el('div', { class: 't' }, [el('small', { text: x.servicio || '' }), document.createTextNode(String(x.nombre || ''))]),
+      el('div', { class: 'm sol-fecha', text: fechaTxt }),
+      el('div', { class: 'd', text: [x.telefono, recibida ? 'recibida ' + recibida : '', x.mensaje ? '«' + x.mensaje + '»' : ''].filter(Boolean).join(' · ') }),
+      el('div', { class: 'b' }, botones)
+    ]));
+  });
+}
+document.querySelectorAll('#solFiltros .filtro').forEach((b) => b.addEventListener('click', () => {
+  solFiltro = b.dataset.f;
+  document.querySelectorAll('#solFiltros .filtro').forEach((y) => y.classList.toggle('activo', y === b));
+  pintarSolicitudes();
+}));
+async function cambiarSolicitud(x, estado) {
+  try { await updateDoc(doc(db, 'solicitudes', x.id), { estado }); x.estado = estado; pintarSolicitudes(); }
+  catch (e) { console.error(e); aviso('No se pudo actualizar la solicitud.', true); }
+}
+function convertirSolicitud(x) {
+  nuevaOrden();
+  const f = form.elements;
+  f.clienta.value = x.nombre || ''; f.telefono.value = x.telefono || '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(x.fecha || '')) f.fecha.value = x.fecha;
+  const c = catalogo.find((k) => normal(k.nombre) === normal(x.servicio));
+  agregarLinea({ servicio: c ? c.nombre : (x.servicio || ''), precio: c ? (c.precio || '') : '', foco: false });
+  actualizar();
+  cambiarSolicitud(x, 'convertida');
+  if (x.mensaje) aviso('Mensaje de la clienta: ' + x.mensaje);
+}
+
+// ═════════════ PRECIOS ═════════════
+function pintarPrecios() {
+  const caja = $('#listaPrecios'); caja.textContent = '';
+  catalogo.forEach((c) => filaPrecio(c.nombre, c.precio));
+}
+function filaPrecio(nombre, precio) {
+  const fila = el('div', { class: 'fila-precio' });
+  const n = el('input', { maxlength: '50', placeholder: 'Servicio', 'aria-label': 'Servicio' }); n.value = nombre || '';
+  const p = el('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', placeholder: 'Q 0.00', 'aria-label': 'Precio sugerido' }); p.value = precio || '';
+  const x = el('button', { type: 'button', class: 'quitar', 'aria-label': 'Quitar', text: '×' });
+  x.addEventListener('click', () => fila.remove());
+  [n, p, x].forEach((y) => fila.appendChild(y));
+  $('#listaPrecios').appendChild(fila);
+  return n;
+}
+$('#btnAgregarServicio').addEventListener('click', () => filaPrecio('', '').focus());
+$('#btnGuardarPrecios').addEventListener('click', async () => {
+  const lista = [...document.querySelectorAll('#listaPrecios .fila-precio')].map((f) => {
+    const i = f.querySelectorAll('input'); return { nombre: i[0].value.trim().slice(0, 50), precio: num(i[1].value) };
+  }).filter((c) => c.nombre).slice(0, 60);
+  if (!lista.length) { aviso('Agregue al menos un servicio.', true); return; }
+  const b = $('#btnGuardarPrecios'); b.disabled = true;
+  try {
+    await setDoc(doc(db, 'config', 'servicios'), { lista, actualizada: serverTimestamp() });
+    catalogo = lista; pintarChips(); pintarPrecios(); aviso('Precios guardados.');
+  } catch (e) { console.error(e); aviso('No se pudo guardar: ' + ((e && e.code) || 'error'), true); }
+  finally { b.disabled = false; }
+});
+
+// ═════════════ REPORTES ═════════════
+function ordenesDelPeriodo() { const p = $('#periodo').value; return ordenes.filter((o) => enPeriodo(o, p)); }
+const textoPeriodo = () => { const s = $('#periodo'); const t = s.options[s.selectedIndex].text; const hoy = new Date();
+  if (s.value === 'mes') return MESES[hoy.getMonth()] + ' ' + hoy.getFullYear();
+  if (s.value === 'anterior') { const d = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1); return MESES[d.getMonth()] + ' ' + d.getFullYear(); }
+  if (s.value === 'anio') return 'año ' + hoy.getFullYear();
+  return t; };
+$('#btnExcel').addEventListener('click', () => {
+  const lista = ordenesDelPeriodo();
+  if (!lista.length) { aviso('No hay órdenes en ese periodo.', true); return; }
+  const esc = (t) => '"' + String(t == null ? '' : t).replace(/"/g, '""') + '"';
+  const filas = [['Número', 'Fecha evento', 'Hora', 'Clienta', 'Teléfono', 'Evento', 'Lugar', 'Servicios', 'Personas', 'Total', 'Anticipo', 'Pagada', 'Atendida']];
+  lista.forEach((o) => {
+    const ls = Array.isArray(o.lineas) ? o.lineas : [];
+    filas.push([o.numero, o.fecha, o.hora, o.clienta, o.telefono, o.evento, o.lugar,
+      [...new Set(ls.map((l) => l.servicio).filter(Boolean))].join(', '), ls.reduce((a, l) => a + (Number(l.cantidad) || 0), 0),
+      (Number(o.total) || 0).toFixed(2), (Number(o.anticipo) || 0).toFixed(2), o.pagada ? 'Sí' : 'No', o.atendida ? 'Sí' : 'No']);
+  });
+  const csv = '﻿' + filas.map((f) => f.map(esc).join(',')).join('\r\n');
+  descargar(new Blob([csv], { type: 'text/csv;charset=utf-8' }), limpiarNombre('Ordenes_' + textoPeriodo()) + '.csv');
+});
+$('#btnReporte').addEventListener('click', async () => {
+  const lista = ordenesDelPeriodo();
+  if (!lista.length) { aviso('No hay órdenes en ese periodo.', true); return; }
+  const r = $('#hojaReporte'); r.textContent = '';
+  const total = lista.reduce((a, o) => a + (Number(o.total) || 0), 0);
+  const cobrado = lista.reduce((a, o) => a + cobradoDe(o), 0);
+  const cab = el('div', { class: 'cab' }, [
+    el('img', { src: 'images/logos/logo_brinel_circular.png', alt: '' }),
+    el('div', {}, [el('h1', { text: 'Reporte de órdenes' }), el('p', { text: 'Brinel Beauty Studio & Academy' })]),
+    el('div', { class: 'num' }, [el('span', { text: 'Periodo' }), el('b', { text: textoPeriodo() }), el('span', { text: 'Generado ' + fechaCorta(new Date()) })])
+  ]);
+  const kpi = (t, v) => el('div', {}, [el('small', { text: t }), el('b', { text: v })]);
+  const tabla = (cabeza, filas, numCols) => {
+    const t = el('table'); const th = el('tr');
+    cabeza.forEach((c, i) => th.appendChild(el('th', numCols.includes(i) ? { class: 'n', text: c } : { text: c })));
+    t.appendChild(el('thead', {}, [th])); const tb = el('tbody');
+    filas.forEach((f) => { const tr = el('tr'); f.forEach((c, i) => tr.appendChild(el('td', numCols.includes(i) ? { class: 'n', text: c } : { text: c }))); tb.appendChild(tr); });
+    t.appendChild(tb); return t;
+  };
+  const serv = {};
+  lista.forEach((o) => (o.lineas || []).forEach((l) => { const k = l.servicio || 'Otro'; serv[k] = serv[k] || { p: 0, q: 0 }; serv[k].p += Number(l.cantidad) || 0; serv[k].q += (Number(l.cantidad) || 0) * (Number(l.precio) || 0); }));
+  const cli = {};
+  lista.forEach((o) => { const k = o.clienta || '—'; cli[k] = cli[k] || { n: 0, q: 0 }; cli[k].n++; cli[k].q += Number(o.total) || 0; });
+  const ordenadas = lista.slice().sort((a, b) => String(a.fecha || '').localeCompare(String(b.fecha || '')));
+  const cuerpo = el('div', { class: 'cuerpo' }, [
+    el('div', { class: 'rep-kpis' }, [kpi('Total en órdenes', dinero(total)), kpi('Cobrado', dinero(cobrado)), kpi('Por cobrar', dinero(Math.max(total - cobrado, 0))),
+      kpi('Órdenes', lista.length + ' · ' + lista.filter((o) => o.pagada).length + ' pagadas')]),
+    el('h2', { text: 'Servicios más vendidos' }),
+    tabla(['Servicio', 'Personas', 'Ingreso'], Object.entries(serv).sort((a, b) => b[1].q - a[1].q).slice(0, 10).map(([k, v]) => [k, String(v.p), dinero(v.q)]), [1, 2]),
+    el('h2', { text: 'Mejores clientas' }),
+    tabla(['Clienta', 'Órdenes', 'Total'], Object.entries(cli).sort((a, b) => b[1].q - a[1].q).slice(0, 5).map(([k, v]) => [k, String(v.n), dinero(v.q)]), [1, 2]),
+    el('h2', { text: 'Órdenes del periodo' }),
+    tabla(['No.', 'Fecha', 'Clienta', 'Estado', 'Total'], ordenadas.map((o) => [o.numero || '', o.fecha ? fechaCorta(desdeIso(o.fecha)) : '—', o.clienta || '',
+      (o.atendida ? 'Atendida' : 'Pendiente') + ' · ' + (o.pagada ? 'Pagada' : 'Por cobrar'), dinero(Number(o.total) || 0)]), [4])
+  ]);
+  r.appendChild(cab); r.appendChild(cuerpo); r.appendChild(el('div', { class: 'pie', text: 'Brinel Beauty Studio & Academy · Reporte interno' }));
+  const b = $('#btnReporte'); b.disabled = true; aviso('Preparando el reporte…');
+  try { pdfListo = await crearPdf(r, 'Reporte_Brinel_' + textoPeriodo()); mostrarPanelPdf(); }
+  catch (e) { console.error(e); aviso('No se pudo crear el reporte.', true); }
+  finally { b.disabled = false; }
+});
+
 // ═════════════ INICIO ═════════════
 let iniciada = false;
 function iniciarApp() {
   if (iniciada) return;
   iniciada = true;
   nuevaOrden();
-  cargarOrdenes().then(actualizar).catch(() => {}); // para el aviso de choques
+  cargarOrdenes().then(() => { datalistClientas(); actualizar(); }).catch(() => {}); // choques y clientas
+  cargarCatalogo();
+  cargarSolicitudes();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(pintarVista);
 }
