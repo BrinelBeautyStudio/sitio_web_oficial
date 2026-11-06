@@ -381,7 +381,7 @@ function cargarLibs() {
   return libsListas;
 }
 
-let pdfListo = null; // { blob, nombre }
+let pdfListo = null; // { blob, nombre, img, nombreImg }
 async function generarPdf() {
   const btn = $('#btnPdf'); btn.disabled = true;
   aviso('Preparando el PDF…');
@@ -414,9 +414,13 @@ async function generarPdf() {
       if (pag > 0) pdf.addPage('letter', 'portrait');
       pdf.addImage(trozo.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 8.5, alto * 8.5 / anchoPx);
     }
+    // Nombre de archivo solo con letras sin tilde: con tildes algunos teléfonos lo guardan como "download" sin .pdf.
     const nombre = ('Orden_' + (numeroActual || 'nueva') + '_' + form.elements.clienta.value.trim())
-      .replace(/[^\p{L}\p{N}_-]+/gu, '_').slice(0, 80) + '.pdf';
-    pdfListo = { blob: pdf.output('blob'), nombre };
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ñ/gi, 'n')
+      .replace(/[^A-Za-z0-9_-]+/g, '_').replace(/_+/g, '_').slice(0, 80) + '.pdf';
+    // Versión en imagen (JPG): Instagram y otras apps no aceptan PDF.
+    const img = await new Promise((ok) => lienzo.toBlob(ok, 'image/jpeg', 0.92));
+    pdfListo = { blob: pdf.output('blob'), nombre, img, nombreImg: nombre.replace(/\.pdf$/, '.jpg') };
     mostrarPanelPdf();
   } catch (e) {
     console.error('[Ordenes] Error al crear el PDF', e);
@@ -427,26 +431,54 @@ async function generarPdf() {
 }
 
 // El teléfono solo deja descargar o compartir cuando la persona toca un botón,
-// por eso el PDF ya armado se entrega desde este panel.
+// por eso el archivo ya armado se entrega desde este panel.
+const UA = navigator.userAgent || '';
+const EN_APP = /Instagram|FBAN|FBAV|FB_IAB|WhatsApp|Line\/|Snapchat|TikTok|musical_ly|; wv\)/i.test(UA);
+const ES_ANDROID = /Android/i.test(UA);
+const archivoPdf = () => new File([pdfListo.blob], pdfListo.nombre, { type: 'application/pdf' });
+const archivoImg = () => new File([pdfListo.img], pdfListo.nombreImg, { type: 'image/jpeg' });
+const puedeCompartir = (f) => { try { return !!(navigator.canShare && navigator.canShare({ files: [f] })); } catch (e) { return false; } };
+
 function mostrarPanelPdf() {
   $('#avisoPdfNombre').textContent = pdfListo.nombre;
-  const archivo = new File([pdfListo.blob], pdfListo.nombre, { type: 'application/pdf' });
-  $('#btnCompartirPdf').hidden = !(navigator.canShare && navigator.canShare({ files: [archivo] }));
+  $('#btnCompartirPdf').hidden = !puedeCompartir(archivoPdf());
+  $('#btnCompartirImg').hidden = !pdfListo.img || !puedeCompartir(archivoImg());
+  $('#avisoApp').hidden = !EN_APP;
+  $('#btnAbrirChrome').hidden = !(EN_APP && ES_ANDROID);
   $('#panelPdf').hidden = false;
   $('#aviso').hidden = true;
 }
-$('#btnDescargarPdf').addEventListener('click', () => {
-  if (!pdfListo) return;
-  const url = URL.createObjectURL(pdfListo.blob);
+
+function descargar(blob, nombre) {
+  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = pdfListo.nombre; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 60000);
-});
-$('#btnCompartirPdf').addEventListener('click', async () => {
-  if (!pdfListo) return;
+  a.href = url; a.download = nombre; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 120000);
+}
+function abrir(blob) {
+  // Plan B: abre el archivo en una pestaña; desde ahí se guarda con el menú del navegador.
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, '_blank');
+  if (!w) location.href = url;
+  setTimeout(() => URL.revokeObjectURL(url), 300000);
+}
+async function compartir(archivo) {
   try {
-    await navigator.share({ files: [new File([pdfListo.blob], pdfListo.nombre, { type: 'application/pdf' })], title: pdfListo.nombre });
-  } catch (e) { if (e && e.name !== 'AbortError') aviso('No se pudo compartir; use Descargar.', true); }
+    await navigator.share({ files: [archivo], title: archivo.name });
+  } catch (e) {
+    if (e && e.name !== 'AbortError') aviso('No se pudo compartir; use Descargar.', true);
+  }
+}
+
+$('#btnCompartirPdf').addEventListener('click', () => { if (pdfListo) compartir(archivoPdf()); });
+$('#btnCompartirImg').addEventListener('click', () => { if (pdfListo) compartir(archivoImg()); });
+$('#btnDescargarPdf').addEventListener('click', () => { if (pdfListo) descargar(pdfListo.blob, pdfListo.nombre); });
+$('#btnDescargarImg').addEventListener('click', () => { if (pdfListo) descargar(pdfListo.img, pdfListo.nombreImg); });
+$('#btnAbrirPdf').addEventListener('click', () => { if (pdfListo) abrir(pdfListo.blob); });
+$('#btnAbrirChrome').addEventListener('click', () => {
+  // Android: abre esta misma página en Chrome (fuera del navegador de Instagram/WhatsApp).
+  location.href = 'intent://' + location.host + location.pathname + '#Intent;scheme=https;package=com.android.chrome;end';
 });
 $('#btnCerrarPdf').addEventListener('click', () => { $('#panelPdf').hidden = true; });
 

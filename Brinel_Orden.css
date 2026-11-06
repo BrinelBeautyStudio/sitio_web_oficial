@@ -166,3 +166,8 @@ body > .hoja { position: absolute; left: -10000px; top: 0; }
 .panel-pdf-botones .btn { width: 100%; }
 .btn-texto { background: transparent; color: var(--gris); }
 @media (min-width: 700px) { .panel-pdf { align-items: center; } }
+
+/* ───── v8: más opciones de entrega ───── */
+.panel-pdf-app { background: #FFF7E6; border: 1px solid #FCD9A0; color: #92400E !important; border-radius: 10px; padding: 10px 12px; word-break: normal !important; text-align: left; }
+.panel-pdf-nota { margin: 12px 0 0 !important; font-size: 12px !important; word-break: normal !important; }
+.panel-pdf-botones .btn-texto { padding: 8px; }

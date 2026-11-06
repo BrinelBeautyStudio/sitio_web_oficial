@@ -7,7 +7,7 @@
   <title>Generar orden | Brinel Beauty</title>
   <meta name="theme-color" content="#B5105F" />
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="Brinel_Orden.css?v=7" />
+  <link rel="stylesheet" href="Brinel_Orden.css?v=8" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/logos/apple-touch-icon.png" />
 </head>
@@ -178,15 +178,21 @@
 <div class="aviso" id="aviso" role="status" hidden></div>
 <div class="panel-pdf no-imprimir" id="panelPdf" hidden>
   <div class="panel-pdf-caja" role="dialog" aria-labelledby="tituloPdf">
-    <h2 id="tituloPdf">PDF listo</h2>
+    <h2 id="tituloPdf">Orden lista</h2>
     <p id="avisoPdfNombre"></p>
+    <p class="panel-pdf-app" id="avisoApp" hidden>Está usando el navegador de Instagram, WhatsApp o Facebook, que <b>no deja descargar</b>. Ábralo en Chrome o Safari (menú ⋮ o ··· → «Abrir en el navegador»).</p>
     <div class="panel-pdf-botones">
-      <button type="button" class="btn btn-rosa" id="btnCompartirPdf">Compartir (WhatsApp…)</button>
-      <button type="button" class="btn btn-borde" id="btnDescargarPdf">Descargar</button>
+      <button type="button" class="btn btn-rosa" id="btnAbrirChrome" hidden>Abrir en Chrome</button>
+      <button type="button" class="btn btn-rosa" id="btnCompartirPdf">Compartir PDF (WhatsApp, correo…)</button>
+      <button type="button" class="btn btn-rosa" id="btnCompartirImg">Compartir imagen (Instagram, WhatsApp…)</button>
+      <button type="button" class="btn btn-borde" id="btnDescargarPdf">Descargar PDF</button>
+      <button type="button" class="btn btn-borde" id="btnDescargarImg">Descargar imagen</button>
+      <button type="button" class="btn btn-texto" id="btnAbrirPdf">¿No descarga? Abrir el PDF</button>
       <button type="button" class="btn btn-texto" id="btnCerrarPdf">Cerrar</button>
     </div>
+    <p class="panel-pdf-nota">Instagram no acepta archivos PDF: para Instagram use «imagen».</p>
   </div>
 </div>
-<script type="module" src="Brinel_Orden.js?v=7"></script>
+<script type="module" src="Brinel_Orden.js?v=8"></script>
 </body>
 </html>
